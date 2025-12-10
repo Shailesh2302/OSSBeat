@@ -1,37 +1,28 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "email" TEXT,
+    "avatar_url" TEXT NOT NULL DEFAULT 'temp avatar_url',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "display_name" TEXT DEFAULT 'temp display_name',
+    "github_id" TEXT NOT NULL,
+    "last_login_at" TIMESTAMP(3),
+    "profile_url" TEXT NOT NULL DEFAULT 'temp profile_url',
+    "username" TEXT NOT NULL DEFAULT 'temp username',
 
-  - The primary key for the `User` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - You are about to drop the column `name` on the `User` table. All the data in the column will be lost.
-  - You are about to drop the `Post` table. If the table is not empty, all the data it contains will be lost.
-  - A unique constraint covering the columns `[github_id]` on the table `User` will be added. If there are existing duplicate values, this will fail.
-  - Added the required column `github_id` to the `User` table without a default value. This is not possible if the table is not empty.
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_authorId_fkey";
+-- CreateTable
+CREATE TABLE "RefreshToken" (
+    "id" TEXT NOT NULL,
+    "tokenHash" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- DropIndex
-DROP INDEX "User_email_key";
-
--- AlterTable
-ALTER TABLE "User" DROP CONSTRAINT "User_pkey",
-DROP COLUMN "name",
-ADD COLUMN     "avatar_url" TEXT NOT NULL DEFAULT 'temp avatar_url',
-ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "display_name" TEXT DEFAULT 'temp display_name',
-ADD COLUMN     "github_id" TEXT NOT NULL,
-ADD COLUMN     "last_login_at" TIMESTAMP(3),
-ADD COLUMN     "profile_url" TEXT NOT NULL DEFAULT 'temp profile_url',
-ADD COLUMN     "username" TEXT NOT NULL DEFAULT 'temp username',
-ALTER COLUMN "id" DROP DEFAULT,
-ALTER COLUMN "id" SET DATA TYPE TEXT,
-ALTER COLUMN "email" DROP NOT NULL,
-ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
-DROP SEQUENCE "User_id_seq";
-
--- DropTable
-DROP TABLE "Post";
+    CONSTRAINT "RefreshToken_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Repository" (
@@ -106,6 +97,12 @@ CREATE TABLE "RepoFetchHistory" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_github_id_key" ON "User"("github_id");
+
+-- CreateIndex
+CREATE INDEX "RefreshToken_userId_idx" ON "RefreshToken"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Repository_github_repo_id_key" ON "Repository"("github_repo_id");
 
 -- CreateIndex
@@ -114,26 +111,26 @@ CREATE UNIQUE INDEX "Repository_full_name_key" ON "Repository"("full_name");
 -- CreateIndex
 CREATE UNIQUE INDEX "UserRepoStat_user_id_repo_id_key" ON "UserRepoStat"("user_id", "repo_id");
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_github_id_key" ON "User"("github_id");
-
 -- AddForeignKey
-ALTER TABLE "Contribution" ADD CONSTRAINT "Contribution_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contribution" ADD CONSTRAINT "Contribution_repo_id_fkey" FOREIGN KEY ("repo_id") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserRepoStat" ADD CONSTRAINT "UserRepoStat_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Contribution" ADD CONSTRAINT "Contribution_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserRepoStat" ADD CONSTRAINT "UserRepoStat_repo_id_fkey" FOREIGN KEY ("repo_id") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RecommendedRepo" ADD CONSTRAINT "RecommendedRepo_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserRepoStat" ADD CONSTRAINT "UserRepoStat_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RecommendedRepo" ADD CONSTRAINT "RecommendedRepo_repo_id_fkey" FOREIGN KEY ("repo_id") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RecommendedRepo" ADD CONSTRAINT "RecommendedRepo_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RepoFetchHistory" ADD CONSTRAINT "RepoFetchHistory_repo_id_fkey" FOREIGN KEY ("repo_id") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
