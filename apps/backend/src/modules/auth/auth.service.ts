@@ -95,7 +95,6 @@ export async function upsertUser(data: GithubProfile) {
 }
 
 export async function issueTokensForUser(userId: string) {
-  
   const accessToken = signAccessToken({ sub: userId });
   const refreshToken = signRefreshToken({ sub: userId });
 
