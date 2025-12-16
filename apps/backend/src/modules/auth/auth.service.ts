@@ -14,22 +14,10 @@ import { signAccessToken, signRefreshToken } from "../../utils/jwt";
 /* ---------------------------
  * Validate required env vars
  * -------------------------- */
-const {
-  GITHUB_CLIENT_ID,
-  GITHUB_CLIENT_SECRET,
-  GITHUB_REDIRECT_URI,
-  JWT_ACCESS_TOKEN_SECRET,
-  JWT_REFRESH_TOKEN_SECRET,
-  ACCESS_TOKEN_EXP = "15m",
-  REFRESH_TOKEN_EXP = "30d",
-} = process.env;
+const { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } = process.env;
 
-assertEnv("GITHUB_CLIENT_ID", GITHUB_CLIENT_ID);
-assertEnv("GITHUB_CLIENT_SECRET", GITHUB_CLIENT_SECRET);
-assertEnv("GITHUB_REDIRECT_URI", GITHUB_REDIRECT_URI);
 assertEnv("JWT_ACCESS_TOKEN_SECRET", JWT_ACCESS_TOKEN_SECRET);
 assertEnv("JWT_REFRESH_TOKEN_SECRET", JWT_REFRESH_TOKEN_SECRET);
-
 
 /* ----------------------------------------
  * Step 1: Redirect URL to GitHub
@@ -106,7 +94,15 @@ export async function upsertUser(data: GithubProfile) {
   });
 }
 
+export async function issueTokensForUser(userId: string) {
+  
+  const accessToken = signAccessToken({ sub: userId });
+  const refreshToken = signRefreshToken({ sub: userId });
 
+  await storeRefreshToken(userId, refreshToken);
+
+  return { accessToken, refreshToken };
+}
 
 /* ----------------------------------------
  * Refresh token storage (hashed)

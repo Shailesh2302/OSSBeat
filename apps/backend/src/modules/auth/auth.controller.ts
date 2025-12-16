@@ -1,7 +1,14 @@
 import { Request, Response } from "express";
 import { handleFailedLogin } from "../../handler/loginErrorHandler";
-import { exchangeGithubCodeForToken, fetchGithubUser, generateGithubAuthUrl, getUserFromAccessToken, refreshTokens, storeRefreshToken, upsertUser } from "./auth.service";
-import { signAccessToken, signRefreshToken } from "../../utils/jwt";
+import {
+  exchangeGithubCodeForToken,
+  fetchGithubUser,
+  generateGithubAuthUrl,
+  getUserFromAccessToken,
+  issueTokensForUser,
+  refreshTokens,
+  upsertUser,
+} from "./auth.service";
 
 type Query = {
   code: string;
@@ -38,21 +45,17 @@ export async function githubCallback(req: Request, res: Response) {
   try {
     res.clearCookie("github_oauth_state");
 
-    const accessToken = await exchangeGithubCodeForToken(code);
-
-    if (!accessToken) {
+    const githubAccessToken = await exchangeGithubCodeForToken(code);
+    if (!githubAccessToken) {
       return handleFailedLogin(req, res);
     }
 
-    const ghUser = await fetchGithubUser(accessToken);
+    const ghUser = await fetchGithubUser(githubAccessToken);
     const user = await upsertUser(ghUser);
 
-    const jwtAccess = signAccessToken({ sub: user.id });
-    const jwtRefresh = signRefreshToken({ sub: user.id });
+    const { refreshToken } = await issueTokensForUser(user.id);
 
-    await storeRefreshToken(user.id, jwtRefresh);
-
-    res.cookie("refresh_token", jwtRefresh, {
+    res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -75,8 +78,7 @@ export async function refresh(req: Request, res: Response) {
   if (!token) return res.status(401).json({ error: "Missing refresh token" });
 
   try {
-    const { accessToken, refreshToken } =
-      await refreshTokens(token);
+    const { accessToken, refreshToken } = await refreshTokens(token);
 
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
