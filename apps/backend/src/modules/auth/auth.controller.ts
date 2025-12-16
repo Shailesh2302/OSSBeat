@@ -44,12 +44,13 @@ export async function githubCallback(req: Request, res: Response) {
   if (!state || !storedState || state !== storedState) {
     return handleFailedLogin(req, res);
   }
-
+  let githubAccessToken;
   try {
     res.clearCookie("github_oauth_state");
 
-    const githubAccessToken = await exchangeGithubCodeForToken(code);
-    if (!githubAccessToken) {
+    githubAccessToken = await exchangeGithubCodeForToken(code);
+
+    if (!githubAccessToken || githubAccessToken.length == 0) {
       return handleFailedLogin(req, res);
     }
 
