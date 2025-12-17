@@ -8,8 +8,9 @@ import { prisma } from "@repo/db";
 import { generateState } from "arctic";
 import { github } from "../../lib/oauth/github";
 import { assertEnv } from "../../config/env";
-import { GithubProfile } from "../../types/githubType";
+import { GithubProfile, UserRepos } from "../../types/githubType";
 import { signAccessToken, signRefreshToken } from "../../utils/jwt";
+import { mapGithubRepo } from "./repo.mapper";
 
 /* ---------------------------
  * Validate required env vars
@@ -47,14 +48,14 @@ export async function exchangeGithubCodeForToken(
  * Step 3: Get GitHub user profile
  ---------------------------------------- */
 export async function fetchGithubUser(
-  accessToken: string
+  githubAccessToken: string
 ): Promise<GithubProfile> {
   const userResp = await axios.get("https://api.github.com/user", {
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
   const emailsResp = await axios.get("https://api.github.com/user/emails", {
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
   const primaryEmail =
@@ -70,6 +71,73 @@ export async function fetchGithubUser(
     username: user.name ?? user.login,
     avatar_url: user.avatar_url ?? null,
   };
+}
+
+export async function fetchUserRepos(
+  githubAccessToken: string
+): Promise<UserRepos> {
+  const userRepos = await axios.get("https://api.github.com/user/repos", {
+    headers: {
+      Authorization: `Bearer ${githubAccessToken}`,
+      Accept: "application/vnd.github+json",
+    },
+    params: {
+      per_page: 100,
+      sort: "updated",
+    },
+  });
+
+  return userRepos.data;
+}
+
+export async function upsertRepos(data: UserRepos) {
+  for (const repo of data) {
+    await prisma.repository.upsert({
+      where: {
+        github_repo_id: repo.github_repo_id,
+      },
+      update: {
+        owner_login: repo.owner_login,
+        owner_id: repo.owner_id,
+        owner_profile_url: repo.owner_profile_url,
+
+        name: repo.name,
+        full_name: repo.full_name,
+        html_url: repo.html_url,
+        description: repo.description,
+        primary_language: repo.primary_language,
+        stars_count: repo.stars_count,
+        forks_count: repo.forks_count,
+        open_issues_count: repo.open_issues_count,
+        is_fork: repo.is_fork,
+        is_private: repo.is_private,
+        last_pushed_at: repo.last_pushed_at,
+
+        userId: repo.userId,
+      },
+      create: {
+        github_repo_id: repo.github_repo_id,
+
+        owner_login: repo.owner_login,
+        owner_id: repo.owner_id,
+        owner_profile_url: repo.owner_profile_url,
+
+        name: repo.name,
+        full_name: repo.full_name,
+        html_url: repo.html_url,
+        description: repo.description,
+        primary_language: repo.primary_language,
+        stars_count: repo.stars_count,
+        forks_count: repo.forks_count,
+        open_issues_count: repo.open_issues_count,
+        is_fork: repo.is_fork,
+        is_private: repo.is_private,
+        last_pushed_at: repo.last_pushed_at,
+
+        userId: repo.userId,
+      },
+    });
+  }
 }
 
 /* ----------------------------------------
@@ -180,4 +248,25 @@ export async function getUserFromAccessToken(token: string) {
   return prisma.user.findUnique({
     where: { id: payload.sub },
   });
+}
+
+
+
+export async function upsertUserAndRepoToDB(
+  ghUser: GithubProfile,
+  githubAccessToken: string
+) {
+  try {
+    const user = await upsertUser(ghUser);
+    const githubRepos = await fetchUserRepos(githubAccessToken);
+    const mappedRepos = githubRepos.map((repo) => mapGithubRepo(repo, user.id));
+    const upsertRepoToDB = await upsertRepos(mappedRepos);
+
+    return { user, message: "success" };
+  } catch (error: any) {
+    throw new Error(
+      "error while upserting the user and repos to database",
+      error
+    );
+  }
 }

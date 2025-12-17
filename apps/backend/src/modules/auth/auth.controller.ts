@@ -3,12 +3,16 @@ import { handleFailedLogin } from "../../handler/loginErrorHandler";
 import {
   exchangeGithubCodeForToken,
   fetchGithubUser,
+  fetchUserRepos,
   generateGithubAuthUrl,
   getUserFromAccessToken,
   issueTokensForUser,
   refreshTokens,
+  upsertRepos,
   upsertUser,
+  upsertUserAndRepoToDB,
 } from "./auth.service";
+import { mapGithubRepo } from "./repo.mapper";
 
 type Query = {
   code: string;
@@ -56,7 +60,14 @@ export async function githubCallback(req: Request, res: Response) {
 
     const ghUser = await fetchGithubUser(githubAccessToken);
 
-    const user = await upsertUser(ghUser);
+    const { user, message } = await upsertUserAndRepoToDB(
+      ghUser,
+      githubAccessToken
+    );
+
+    if (message !== "success") {
+      throw new Error("Failed to upsert user and repos to database");
+    }
 
     const { refreshToken } = await issueTokensForUser(user.id);
 

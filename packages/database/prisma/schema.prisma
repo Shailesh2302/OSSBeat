@@ -16,19 +16,20 @@ enum ProviderName{
 
 model User {
   id               String            @id @default(uuid())
-  email            String?
-  avatar_url       String            @default("temp avatar_url")
+  email            String?           @unique
+  avatar_url       String?           
   created_at       DateTime          @default(now())
-  display_name     String?           @default("temp display_name")
+  display_name     String?           
   last_login_at    DateTime?
-  profile_url      String            @default("temp profile_url")
-  username         String            @default("temp username")
+  profile_url      String?
+  username         String 
 
   contributions    Contribution[]
   recommendedRepos RecommendedRepo[]
   refreshTokens    RefreshToken[]
   userRepoStats    UserRepoStat[]
   providers        Provider[]
+  repositories     Repository[]
 }
 
 model Provider {
@@ -37,8 +38,8 @@ model Provider {
   providerUserId String   
   createdAt      DateTime @default(now())
 
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerUserId])
   @@index([userId])
@@ -50,16 +51,18 @@ model RefreshToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
 model Repository {
-  id                String             @id @default(uuid())
+  id                String             @id @unique @default(uuid())
   github_repo_id    String             @unique
-  owner             String
+  owner_login       String  
+  owner_id          Int    
+  owner_profile_url String
   name              String
   full_name         String             @unique
   html_url          String
@@ -71,6 +74,9 @@ model Repository {
   is_fork           Boolean            @default(false)
   is_private        Boolean            @default(false)
   last_pushed_at    DateTime?
+
+  userId            String?
+  user              User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   contributions     Contribution[]
   recommendedRepos  RecommendedRepo[]
