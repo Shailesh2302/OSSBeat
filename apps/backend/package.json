@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "esbuild --bundle src/index.ts --outfile=dist/index.js --platform=node --format=esm",
+    "build": "esbuild --bundle src/index.ts --outfile=dist/index.js --platform=node --format=esm --external:dotenv --external:@repo/db --packages=external",
     "start": "node dist/index.js"
   },
   "keywords": [],
