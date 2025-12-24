@@ -29,7 +29,7 @@ export async function getDiscoverRepos(req: Request, res: Response) {
     const data = await discoverRepos({
       githubAccessToken,
       cursor,
-      perPage: 1000,
+      perPage: 100,
     });
     console.log(data.repos[0]);
     res.json(data);
