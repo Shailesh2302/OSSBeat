@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { fetchAPI } from "@/lib/api";
+import { fetchAPI } from "../../../lib/api";
 
 interface Repository {
   id: string;
