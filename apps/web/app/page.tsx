@@ -2,14 +2,14 @@ import Image from "next/image";
 import { Card } from "@repo/ui/card";
 import { Gradient } from "@repo/ui/gradient";
 import { TurborepoLogo } from "@repo/ui/turborepo-logo";
-import { prisma } from "@repo/db";
+import Link from "next/link";
 
 export default async function Page() {
-  const user = await prisma.user.findFirst();
-
   return (
     <main className="flex flex-col items-center justify-between min-h-screen p-24">
-      {user?.display_name}
+      <button>
+        <Link href={"repo/discover"}>go to repo page</Link>
+      </button>
     </main>
   );
 }
