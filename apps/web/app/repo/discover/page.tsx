@@ -21,6 +21,7 @@ export default function DiscoverPage() {
       try {
         const res = await fetchAPI("/repo/discover");
         const data = await res.json();
+        console.log(data);
         setRepos(Array.isArray(data) ? data : data.repos || []);
       } catch (err) {
         setError("Failed to load repositories");
