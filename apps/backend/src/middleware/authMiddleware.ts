@@ -16,10 +16,16 @@ export const protectRoute = async (
   next: NextFunction
 ) => {
   try {
-    console.log("req.headers.authorization : ", req.headers.authorization);
+    // console.log("req.headers.authorization : ", req.headers.authorization);
 
     const authHeader = req.headers.authorization;
-    console.log(authHeader);
+    const refreshToken = req.cookies.refreshToken;
+
+    // console.log(
+    //   "refreshToken from the req.cookies.refreshToken : ",
+    //   refreshToken
+    // );
+    // console.log(authHeader);
     if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Missing access token" });
     }
@@ -27,15 +33,7 @@ export const protectRoute = async (
     const token = authHeader.split(" ")[1];
 
     const payload = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
-    console.log("-----------------------------------------");
-    console.log("-----------------------------------------");
-    console.log("-----------------------------------------");
-    console.log("-----------------------------------------");
-    console.log(payload);
-    console.log("-----------------------------------------");
-    console.log("-----------------------------------------");
-    console.log("-----------------------------------------");
-    console.log("-----------------------------------------");
+
 
     const user = await prisma.user.findUnique({
       where: {

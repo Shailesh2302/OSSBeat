@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./modules/auth/authRoutes";
 import repoRouter from "./modules/repo/repoRoutes";
+import userRouter from "./modules/user/userRoutes";
+import githubWebhookRoute from "./modules/hook/githubWebhookRoutes";
 
 // Environment validation
 const requiredEnvVars = [
@@ -30,7 +32,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "find-my-repo-web.vercel.app",
+    origin: process.env.FRONTEND_URL || "http://localhost:3001",
     credentials: true,
   })
 );
@@ -42,10 +44,13 @@ if (NODE_ENV === "development") {
     next();
   });
 }
-
-// Routes
-app.use("/auth", authRoutes);
-app.use("/repo", repoRouter);
+app.use(
+  express.json({
+    verify: (req: any, _res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 
 // Health check
 app.get("/health", (_req, res) => {
@@ -56,17 +61,23 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// 404 handler
-app.use((_req, res) => {
-  res.status(404).json({ error: "Route not found" });
-});
-
 // Error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Error:", err);
   res.status(500).json({
     error: NODE_ENV === "production" ? "Internal server error" : err.message,
   });
+});
+
+// Routes
+app.use("/auth", authRoutes);
+app.use("/repo", repoRouter);
+app.use("/user", userRouter);
+app.use("/github", githubWebhookRoute);
+
+// 404 handler
+app.use((_req, res) => {
+  res.status(404).json({ error: "Route not found" });
 });
 
 // Graceful shutdown

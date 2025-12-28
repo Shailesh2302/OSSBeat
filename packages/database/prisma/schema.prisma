@@ -72,6 +72,7 @@ model Repository {
   stars_count       Int?
   forks_count       Int?
   open_issues_count Int?
+  topics            String[] @default([]) 
   is_fork           Boolean            @default(false)
   is_private        Boolean            @default(false)
   last_pushed_at    DateTime?
@@ -117,7 +118,7 @@ model UserRepoStat {
 }
 
 model RecommendedRepo {
-  id             String     @id @default(uuid())
+  id             String       @id @default(uuid())
   user_id        String
   repo_id        String
   score          Float?
@@ -137,3 +138,5 @@ model RepoFetchHistory {
 
   repo         Repository @relation(fields: [repo_id], references: [id])
 }
+
+

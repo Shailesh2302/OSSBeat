@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
@@ -16,7 +18,7 @@ export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
-    credentials: "include", // refresh token cookie
+    credentials: "include",
   });
 
   if (res.status === 401) {
@@ -26,6 +28,7 @@ export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
     }
 
     window.location.href = "/login?error=session_expired";
+    // redirect("/login")
     throw new Error("Session expired");
   }
 

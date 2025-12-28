@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "esbuild --bundle src/index.ts --outfile=dist/index.js --platform=node --format=esm --external:dotenv --external:@repo/db --packages=external",
-    "start": "node dist/index.js" 
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "node-fetch": "^3.3.2",
     "prisma": "^7.0.1",
     "zod": "^4.1.13"
   },

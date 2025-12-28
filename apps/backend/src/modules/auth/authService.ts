@@ -43,22 +43,34 @@ export async function fetchGithubUser(
     headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
-  const emailsResp = await axios.get("https://api.github.com/user/emails", {
+  // const emailsResp = await axios.get("https://api.github.com/user/emails", {
+  //   headers: { Authorization: `Bearer ${githubAccessToken}` },
+  // });
+
+  const repoResp = await axios.get(`${userResp.data.repos_url}`, {
     headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
-  const primaryEmail =
-    (Array.isArray(emailsResp.data)
-      ? emailsResp.data.find((e: any) => e.primary)?.email
-      : null) ?? null;
+  console.log("repoResp", repoResp.data[0]);
+
+  // const primaryEmail =
+  //   (Array.isArray(emailsResp.data)
+  //     ? emailsResp.data.find((e: any) => e.primary)?.email
+  //     : null) ?? null;
 
   const user = userResp.data;
 
+  // console.log("----------------------------------------------------------");
+  // console.log("userData : ", userResp.data);
+  // console.log("----------------------------------------------------------");
+
   return {
     github_id: String(user.id),
-    email: primaryEmail,
-    username: user.name ?? user.login,
+    email: user.email,
+    username: user.name ?? "null",
     avatar_url: user.avatar_url ?? null,
+    display_name: user.login,
+    profile_url: user.url,
   };
 }
 
@@ -75,7 +87,9 @@ export async function fetchUserRepos(
       sort: "updated",
     },
   });
-
+  // console.log("----------------------------------------------------------");
+  // console.log("userData : ", userRepos.data);
+  // console.log("----------------------------------------------------------");
   return userRepos.data;
 }
 
@@ -181,6 +195,8 @@ export async function upsertUser(
         username: data.username,
         avatar_url: data.avatar_url ?? undefined,
         last_login_at: new Date(),
+        profile_url: data.profile_url,
+        display_name: data.display_name,
       },
     });
   }
@@ -279,6 +295,6 @@ export async function upsertUserAndRepoToDB(
     return { user, message: "success" };
   } catch (error: any) {
     console.error("REAL ERROR:", error);
-  throw error; 
+    throw error;
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { fetchAPI } from "../../../lib/api";
+import { fetchAPI } from "../../../../lib/api";
 
 const Page = () => {
   const [token, setToken] = useState([]);

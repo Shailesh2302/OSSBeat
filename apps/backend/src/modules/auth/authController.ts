@@ -61,10 +61,11 @@ export async function githubCallback(req: Request, res: Response) {
    
     const { accessToken, refreshToken } = await issueTokensForUser(user.id);
 
-    console.log("refreshToken: ", refreshToken);
-    console.log("accessToken: ", accessToken); // Add this log
+    // console.log("refreshToken: ", refreshToken);
+    // console.log("accessToken: ", accessToken); // Add this log
 
     const isProd = process.env.NODE_ENV === "production";
+
 
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
@@ -140,12 +141,12 @@ export async function getToken(req: Request, res: Response) {
   const headerAccessToken = req.headers.accessToken;
   const cookieAccessToken = req.cookies.accessToken;
   const token2 = req.headers.authorization;
-  console.log("token 1 : ", token1);
-  console.log("cookieAccessToken : ", cookieAccessToken);
-  console.log("headerAccessToken : ", headerAccessToken);
+  // console.log("token 1 : ", token1);
+  // console.log("cookieAccessToken : ", cookieAccessToken);
+  // console.log("headerAccessToken : ", headerAccessToken);
 
-  console.log("token 2 : ", token2);
+  // console.log("token 2 : ", token2);
   const token3 = token2?.split(" ")[1];
-  console.log("token 3 : ", token3);
+  // console.log("token 3 : ", token3);
   return res.json({ token1: token1, token2: token2, token3: token3 });
 }

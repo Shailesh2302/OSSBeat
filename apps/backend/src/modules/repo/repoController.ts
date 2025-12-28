@@ -5,15 +5,26 @@ import { prisma } from "@repo/db";
 
 export async function getDiscoverRepos(req: Request, res: Response) {
   try {
+    const {
+      perPage = 100,
+      language,
+      minStars = 0,
+      minForks = 0,
+      minIssues = 0,
+      topic,
+    } = req.query;
     const cursor = req.query.cursor as string | undefined;
+    const languageStr = typeof language === "string" ? language : undefined;
 
     const user = await req.user;
-    // GitHub token should come from:
-    // - provider table
-    // - OR app-level token
-    console.log("user :", user);
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    // console.log("user :", user);
     const userId = user.id;
-    console.log("userTd : ", userId);
+    // console.log("userTd : ", userId);
 
     const provider = await prisma.provider.findFirst({
       where: { userId, provider: "GITHUB" },
@@ -26,12 +37,19 @@ export async function getDiscoverRepos(req: Request, res: Response) {
       return res.status(500).json({ error: "GitHub token missing" });
     }
 
-    const data = await discoverRepos({
-      githubAccessToken,
+    const data = await discoverRepos(githubAccessToken, {
+      perPage: Number(perPage),
       cursor,
-      perPage: 100,
+      language: languageStr,
+      minStars: Number(minStars),
+      minForks: Number(minForks),
+      minIssues: Number(minIssues),
+      topic: typeof topic === "string" ? topic : undefined,
     });
-    console.log(data.repos[0]);
+    // console.log("---------------------------------------------------");
+    // console.log("discover repos : ", data.repos[0]);
+    // console.log("---------------------------------------------------");
+
     res.json(data);
   } catch (err) {
     console.error(err);

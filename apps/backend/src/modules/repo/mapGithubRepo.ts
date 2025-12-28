@@ -19,6 +19,15 @@ export function mapGithubRepo(repo: any) {
     is_fork: repo.isFork,
     is_private: repo.isPrivate,
 
+    topics:
+      repo.repositoryTopics?.nodes.map(
+        (n: { topic: { name: string } }) => n.topic.name
+      ) ?? [],
+
     last_pushed_at: repo.pushedAt,
   };
+}
+
+interface Topic {
+  name: string | undefined;
 }

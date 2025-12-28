@@ -1,46 +1,36 @@
 // import "dotenv/config";
 import { Request, Response } from "express";
 import { prisma } from "@repo/db"; // adjust import path
-import { z } from "zod";
 
-
-// Validation schema
-const CreateUserSchema = z.object({
-  email: z.string().email().optional(),
-  avatar_url: z.string().optional(),
-  display_name: z.string().optional(),
-  github_id: z.string(),
-  profile_url: z.string().optional(),
-  username: z.string().optional(),
-});
-
-export async function createUser(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response) {
+  const user = req.user;
   try {
-    // Validate body
-    const data = CreateUserSchema.parse(req.body);
- 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        avatar_url: data.avatar_url ?? "temp avatar_url",
-        display_name: data.display_name ?? "temp display_name",
-        github_id: data.github_id,
-        profile_url: data.profile_url ?? "temp profile_url",
-        username: data.username ?? "temp username",
-      },
-    });
-
-    return res.status(201).json({
-      success: true,
-      user,
-    });
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return res.status(400).json({ error: err });
+    if (!user) {
+      throw new Error("User not found");
     }
 
-    console.error(err);
-    return res.status(500).json({ error: "Failed to create user" });
+    const userId = user?.id;
+
+    const userData = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        email: true,
+        avatar_url: true,
+        created_at: true,
+        display_name: true,
+        last_login_at: true,
+        profile_url: true,
+        username: true,
+      },
+    });
+    if (!userData) {
+      throw new Error("User data not found");
+    }
+
+    return res.status(200).json(userData);
+  } catch (error: any) {
+    throw new Error("Internal server error", error);
   }
 }
