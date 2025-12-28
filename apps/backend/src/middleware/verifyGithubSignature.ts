@@ -12,19 +12,19 @@ export function verifyGithubSignature(
   const rawBody = (req as any).rawBody;
 
   if (typeof signature !== "string") {
-    return res.status(400).send("Missing signature");
+    return res
+      .status(400)
+      .send({
+        message: "Missing signature",
+        token: process.env.GITHUB_WEBHOOK_SECRET,
+      });
   }
 
   const expected =
     "sha256=" +
     crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
 
-  if (
-    !crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expected)
-    )
-  ) {
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
     return res.status(401).send("Invalid signature");
   }
 
