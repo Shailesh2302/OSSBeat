@@ -22,14 +22,22 @@ for (const envVar of requiredEnvVars) {
 }
 
 const app = express();
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT) | 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 // Middleware
-app.use(express.json({ limit: "10mb" }));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(
+  express.json({
+    limit: "10mb",
+    verify: (req: any, _res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3001",
@@ -44,13 +52,6 @@ if (NODE_ENV === "development") {
     next();
   });
 }
-app.use(
-  express.json({
-    verify: (req: any, _res, buf) => {
-      req.rawBody = buf;
-    },
-  })
-);
 
 // Health check
 app.get("/health", (_req, res) => {
