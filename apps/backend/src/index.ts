@@ -22,7 +22,7 @@ for (const envVar of requiredEnvVars) {
 }
 
 const app = express();
-const PORT = Number(process.env.PORT) | 4000;
+const PORT = parseInt(process.env.PORT!) || 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 // Middleware
