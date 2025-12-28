@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { prisma } from "@repo/db";
 import { Request, Response } from "express";
 import { decrypt } from "../utils/crypto";
