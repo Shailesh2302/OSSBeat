@@ -4,15 +4,15 @@ const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
 export async function githubGraphqlRequest<T>(
   query: string,
-  variables: Record<string, any>,
-  accessToken: string
+  variables: Record<string, any>
+  // accessToken: string
 ): Promise<T> {
   const res = await axios.post(
     GITHUB_GRAPHQL_URL,
     { query, variables },
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
         Accept: "application/vnd.github+json",
       },
     }

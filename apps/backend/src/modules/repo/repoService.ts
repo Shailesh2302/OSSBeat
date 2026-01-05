@@ -84,7 +84,7 @@ function buildSearchQuery({
 }
 
 export async function discoverRepos(
-  githubAccessToken: string,
+  // githubAccessToken: string,
   params: {
     perPage: number;
     cursor?: string | null;
@@ -104,7 +104,7 @@ export async function discoverRepos(
       first: params.perPage,
       after: params.cursor ?? null,
     },
-    githubAccessToken
+    // githubAccessToken
   )) as {
     search: {
       nodes: any[];

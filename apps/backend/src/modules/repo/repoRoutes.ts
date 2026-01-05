@@ -4,6 +4,6 @@ import { protectRoute } from "../../middleware/authMiddleware";
 
 const router: Router = Router();
 
-router.get("/discover", protectRoute, getDiscoverRepos);
+router.get("/discover", getDiscoverRepos);
 
 export default router;
