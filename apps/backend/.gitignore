@@ -15,7 +15,7 @@ build
 .swc/
 .dist
 
-/keys/github-app.pem
+/keys/*.pem
 
 # misc
 .DS_Store

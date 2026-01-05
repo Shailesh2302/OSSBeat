@@ -10,6 +10,11 @@ import { createAppAuth } from "@octokit/auth-app";
 
 const privateKey = process.env.GITHUB_PRIVATE_KEY!.replace(/\\n/g, "\n");
 
+console.log(
+  process.env.GITHUB_APP_ID,
+  process.env.GITHUB_INSTALLATION_ID,
+  privateKey.startsWith("-----BEGIN RSA PRIVATE KEY-----")
+);  
 
 export async function getGithubAppToken() {
   const auth = createAppAuth({
