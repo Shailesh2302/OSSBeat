@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Repo } from "@/types/repoTypes";
-import { axiosInstance } from "@/utils/axios";
+import { axiosPublicInstance } from "@/utils/axios-public";
 
 const MAJOR_TOPIC_LIMIT = 12;
 
@@ -25,7 +25,7 @@ export default function DiscoverPage() {
   async function loadRepos(next = false) {
     setLoading(true);
 
-    const res = await axiosInstance.get(
+    const res = await axiosPublicInstance.get(
       `/repo/discover${next && cursor ? `?cursor=${cursor}` : ""}`
     );
 
