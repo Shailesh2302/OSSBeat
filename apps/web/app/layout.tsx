@@ -7,8 +7,18 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ossbeat",
+  title:
+    "ossbeat - Play Beat With OSS | Find Your Likable Project And Contribute",
   description: "Find your oss to contribute!!!",
+  openGraph: {
+    images: [
+      {
+        url: "/ossbeat-logo.png",
+        width: 1200,
+        height: 700,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
