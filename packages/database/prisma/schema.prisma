@@ -69,10 +69,10 @@ model Repository {
   html_url          String
   description       String?
   primary_language  String?
-  stars_count       Int?
-  forks_count       Int?
-  open_issues_count Int?
-  topics            String[] @default([]) 
+  stars_count       Int?               @default(0)
+  forks_count       Int?               @default(0)
+  open_issues_count Int?               @default(0)
+  topics            String[]           @default([]) 
   is_fork           Boolean            @default(false)
   is_private        Boolean            @default(false)
   last_pushed_at    DateTime?
@@ -84,6 +84,9 @@ model Repository {
   recommendedRepos  RecommendedRepo[]
   fetchHistory      RepoFetchHistory[]
   userRepoStats     UserRepoStat[]
+
+  @@unique([userId])
+
 }
 
 model Contribution {
@@ -100,6 +103,9 @@ model Contribution {
 
   repo            Repository @relation(fields: [repo_id], references: [id])
   user            User       @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, repo_id])
+
 }
 
 model UserRepoStat {
@@ -109,7 +115,7 @@ model UserRepoStat {
   total_commits   Int        @default(0)
   total_prs       Int        @default(0)
   total_issues    Int        @default(0)
-  last_updated_at DateTime   @default(now())
+  last_updated_at DateTime   @default(now()) 
 
   repo            Repository @relation(fields: [repo_id], references: [id])
   user            User       @relation(fields: [user_id], references: [id])
