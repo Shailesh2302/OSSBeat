@@ -10,7 +10,7 @@ interface OnButtonProps {
 
 const OnButton = ({ onSubmit, className }: OnButtonProps) => {
   return (
-    <div className="flex pt-4 flex-wrap justify-center items-center gap-2 md:flex-row">
+    <div className="flex pt-6 flex-wrap justify-center items-center gap-2 md:flex-row">
       <Button
         onClick={onSubmit}
         variant="default"

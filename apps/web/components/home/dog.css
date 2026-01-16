@@ -1,0 +1,148 @@
+/* wrapper has NO background */
+.dog-wrapper {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+}
+
+/* ===== DOG BASE ===== */
+
+.dog {
+  position: absolute;
+  left: -60px;
+  bottom: 20px;
+  width: 60px;
+  height: 30px;
+  animation: moveDog 5s linear infinite;
+}
+
+/* ===== HEAD ===== */
+
+.head {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+
+.ear {
+  position: absolute;
+  width: 4px;
+  height: 6px;
+  background: white;
+}
+
+.ear.left {
+  left: 0;
+  top: -4px;
+}
+
+.ear.right {
+  right: 0;
+  top: -4px;
+}
+
+.eye {
+  position: absolute;
+  right: 3px;
+  top: 5px;
+  width: 2px;
+  height: 2px;
+  background: black;
+}
+
+.snout {
+  position: absolute;
+  right: -4px;
+  top: 6px;
+  width: 4px;
+  height: 4px;
+  background: white;
+}
+
+/* ===== BODY ===== */
+
+.body {
+  position: absolute;
+  left: 16px;
+  top: 4px;
+  width: 28px;
+  height: 12px;
+  background: white;
+}
+
+/* ===== LEGS ===== */
+
+.leg {
+  position: absolute;
+  width: 4px;
+  height: 10px;
+  background: white;
+  bottom: -10px;
+  transform-origin: top;
+}
+
+.leg.front.left {
+  left: 18px;
+  animation: legRun 0.35s infinite alternate;
+}
+
+.leg.front.right {
+  left: 24px;
+  animation: legRun 0.35s infinite alternate-reverse;
+}
+
+.leg.back.left {
+  left: 32px;
+  animation: legRun 0.35s infinite alternate-reverse;
+}
+
+.leg.back.right {
+  left: 38px;
+  animation: legRun 0.35s infinite alternate;
+}
+
+/* ===== TAIL ===== */
+
+.tail {
+  position: absolute;
+  left: 44px;
+  top: 6px;
+  width: 8px;
+  height: 3px;
+  background: white;
+  transform-origin: left;
+  animation: tailWag 0.3s infinite alternate;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes moveDog {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(110vw);
+  }
+}
+
+@keyframes legRun {
+  from {
+    transform: rotate(18deg);
+  }
+  to {
+    transform: rotate(-18deg);
+  }
+}
+
+@keyframes tailWag {
+  from {
+    transform: rotate(15deg);
+  }
+  to {
+    transform: rotate(-15deg);
+  }
+}

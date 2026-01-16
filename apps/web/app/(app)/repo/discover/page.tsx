@@ -29,7 +29,7 @@ export default function DiscoverPage() {
       `/repo/discover${next && cursor ? `?cursor=${cursor}` : ""}`
     );
 
-    const data = res.data;
+    const data = res?.data;
 
     setRepos(next ? [...repos, ...data.repos] : data.repos);
     setCursor(data.nextCursor ?? null);

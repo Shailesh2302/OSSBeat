@@ -37,7 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className="min-h-screen w-full md:bg-amber-800 sm:bg-yellow-300 lg:bg-blue-950">
-            <div className="mx-auto lg:max-w-8xl md:max-w-7xl">{children}</div>
+            <div className="mx-auto md:max-w-8xl">{children}</div>
           </main>
         </ThemeProvider>
       </body>

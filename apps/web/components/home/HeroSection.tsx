@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { Button } from "../ui/button";
 import OnButton from "../web/Button";
+import OpenSourceJourneyChart from "./OpenSourceJourneyChart";
+import RunningDog from "./RunningDog";
 
 export const HeroSection = () => {
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
     setLoading(true);
-    window.location.href =
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/github`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`;
   };
   return (
     <section
       className="flex items-start justify-center min-h-screen
-      bg-linear-to-b from-foreground from-40% via-gray-500 via-60% to-background to-80%"
+      bg-linear-to-b from-foreground from-30% via-gray-500 via-50% to-background to-75%"
     >
       <main className="w-full">
-        <div className="flex flex-col pt-40 gap-2 justify-center items-center">
-          <h1 className="text-background text-3xl  text-shadow-2xs md:text-4xl lg:text-5xl font-extrabold text-center">
+        <div className="flex flex-col pt-40 gap-6 justify-center items-center">
+          <h1 className="text-background text-4xl  text-shadow-2xs md:text-5xl lg:text-6xl font-extrabold text-center">
             <span className="block">One Platform.</span>
             <span className="block">Every Open Source Opportunity.</span>
           </h1>
@@ -30,11 +31,15 @@ export const HeroSection = () => {
               fundamentals,
               <br />
               get expert mentorship for GSoC, and make meaningful contributions
-              today.
+              toda20
             </h5>
           </div>
         </div>
-        <OnButton onSubmit={handleLogin}/>
+        <OnButton onSubmit={handleLogin} />
+        <div className="pt-45">
+        <RunningDog/>
+      <OpenSourceJourneyChart />
+      </div>
       </main>
     </section>
   );
