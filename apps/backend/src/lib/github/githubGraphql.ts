@@ -20,7 +20,7 @@ export async function githubGraphqlRequest<T>(
     }
   );
 
-  console.log("response : ", res.data.data.search.nodes[0]);
+  // console.log("response : ", res.data.data.search.nodes[0]);
 
   if (res.data.errors) {
     throw new Error(JSON.stringify(res.data.errors));
