@@ -6,9 +6,9 @@ export async function githubWebhookController(req: Request, res: Response) {
   const event = req.headers["x-github-event"];
   const payload = req.body;
 
-  console.log("-----------------------------------------");
-  console.log(req.body.repository);
-  console.log("-----------------------------------------");
+  // console.log("-----------------------------------------");
+  // console.log(req.body.repository);
+  // console.log("-----------------------------------------");
 
   if (!event) {
     return res.status(400).send("Missing event header");

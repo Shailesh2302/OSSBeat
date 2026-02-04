@@ -10,11 +10,11 @@ import { createAppAuth } from "@octokit/auth-app";
 
 const privateKey = process.env.PRIVATE_KEY!.replace(/\\n/g, "\n");
 
-console.log(
-  process.env.GITHUB_APP_ID,
-  process.env.GITHUB_INSTALLATION_ID,
-  privateKey.startsWith("-----BEGIN RSA PRIVATE KEY-----")
-);
+// console.log(
+//   process.env.GITHUB_APP_ID,
+//   process.env.GITHUB_INSTALLATION_ID,
+//   privateKey.startsWith("-----BEGIN RSA PRIVATE KEY-----")
+// );
 
 let cachedToken: string | null = null;
 let expiresAt = 0;
