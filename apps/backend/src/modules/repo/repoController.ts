@@ -2,10 +2,11 @@ import { Request, Response } from "express";
 import { discoverRepos } from "./repoService";
 import { decrypt } from "../../utils/crypto";
 import { prisma } from "@repo/db";
-import { redis } from "../../lib/redis/redisClient";
+import { getRedis } from "../../lib/redis/redisClient";
 
 export async function getDiscoverRepos(req: Request, res: Response) {
   try {
+    const redis = await getRedis();
     const {
       perPage = 100,
       language,
@@ -27,12 +28,12 @@ export async function getDiscoverRepos(req: Request, res: Response) {
       topic: typeof topic === "string" ? topic : undefined,
     });
 
-
     const cacheKey = cursor
       ? `discover:repos:cursor:${cursor}`
       : `discover:repos:first`;
 
-    await redis.set(cacheKey, JSON.stringify(data), "EX", 60);
+    await redis.setEx(cacheKey, 60, JSON.stringify(data));
+    console.log(data.repos[0],"cachedkey : ",cacheKey);
     res.json(data);
   } catch (err) {
     console.error(err);

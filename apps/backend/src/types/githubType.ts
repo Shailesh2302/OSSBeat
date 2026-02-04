@@ -4,7 +4,7 @@ export type GithubProfile = {
   username: string;
   avatar_url: string | null;
   display_name: string | null;
-  profile_url : string | null;
+  profile_url: string | null;
 };
 
 export type UserRepo = {
@@ -35,3 +35,10 @@ export type UserRepo = {
 
 export type UserRepos = UserRepo[];
 
+import type { RedisClientType } from "redis";
+
+declare global {
+  var _redis: RedisClientType | undefined;
+}
+
+export {};

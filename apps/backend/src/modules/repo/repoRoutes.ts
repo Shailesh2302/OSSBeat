@@ -8,9 +8,10 @@ const router: Router = Router();
 router.get(
   "/discover",
   rateLimiting({ limit: 30, timer: 60, key: "ip" }),
-  getCachedData(
-    (req) =>
-      `discover:repos:cursor:${req.query.cursor || "discover:repos:first"}`,
+  getCachedData((req) =>
+    req.query.cursor
+      ? `discover:repos:cursor:${req.query.cursor}`
+      : "discover:repos:first",
   ),
   getDiscoverRepos,
 );
