@@ -8,7 +8,12 @@ import { createAppAuth } from "@octokit/auth-app";
 //   "utf8"
 // );
 
-const privateKey = process.env.PRIVATE_KEY!.replace(/\\n/g, "\n");
+const rawKey = process.env.PRIVATE_KEY;
+if (!rawKey) {
+  throw new Error("PRIVATE_KEY is missing in environment variables");
+}
+
+const privateKey = rawKey.replace(/\\n/g, "\n");
 
 // console.log(
 //   process.env.GITHUB_APP_ID,
