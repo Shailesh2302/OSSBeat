@@ -7,6 +7,7 @@ import repoRouter from "./modules/repo/repoRoutes";
 import userRouter from "./modules/user/userRoutes";
 import githubWebhookRoute from "./modules/hook/githubWebhookRoutes";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
+import featureRoute from "./modules/features/featureRoutes";
 
 // Environment validation
 const requiredEnvVars = [
@@ -26,8 +27,6 @@ const app = express();
 const PORT = 4000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
-
-
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -37,15 +36,14 @@ app.use(
     verify: (req: any, _res, buf) => {
       req.rawBody = buf;
     },
-  })
+  }),
 );
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
-
 
 if (NODE_ENV === "development") {
   app.use((req, _res, next) => {
@@ -53,8 +51,6 @@ if (NODE_ENV === "development") {
     next();
   });
 }
-
-
 
 app.get("/health", (_req, res) => {
   res.json({
@@ -64,12 +60,12 @@ app.get("/health", (_req, res) => {
   });
 });
 
-
 // Routes
 app.use("/auth", authRoutes);
 app.use("/repo", repoRouter);
 app.use("/user", userRouter);
 app.use("/github", githubWebhookRoute);
+app.use("/feature", featureRoute);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });
@@ -77,13 +73,10 @@ app.use((_req, res) => {
 
 app.use(globalErrorHandler);
 
-
 process.on("SIGTERM", () => {
   console.log("SIGTERM received, shutting down gracefully...");
   process.exit(0);
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);

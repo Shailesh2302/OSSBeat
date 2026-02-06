@@ -87,9 +87,11 @@ export async function fetchUserRepos(
       sort: "updated",
     },
   });
+  
   // console.log("----------------------------------------------------------");
   // console.log("userData : ", userRepos.data);
   // console.log("----------------------------------------------------------");
+  
   return userRepos.data;
 }
 
@@ -107,14 +109,14 @@ export async function upsertRepos(data: UserRepos) {
         name: repo.name,
         full_name: repo.full_name,
         html_url: repo.html_url,
-        description: repo.description,
-        primary_language: repo.primary_language,
-        stars_count: repo.stars_count,
-        forks_count: repo.forks_count,
-        open_issues_count: repo.open_issues_count,
+        description: repo.description ?? undefined,
+        primary_language: repo.primary_language ?? undefined,
+        stars_count: repo.stars_count ?? undefined,
+        forks_count: repo.forks_count ?? undefined,
+        open_issues_count: repo.open_issues_count ?? undefined,
         is_fork: repo.is_fork,
         is_private: repo.is_private,
-        last_pushed_at: repo.last_pushed_at,
+        last_pushed_at: repo.last_pushed_at ?? undefined,
 
         userId: repo.userId,
       },
@@ -128,14 +130,14 @@ export async function upsertRepos(data: UserRepos) {
         name: repo.name,
         full_name: repo.full_name,
         html_url: repo.html_url,
-        description: repo.description,
-        primary_language: repo.primary_language,
-        stars_count: repo.stars_count,
-        forks_count: repo.forks_count,
-        open_issues_count: repo.open_issues_count,
+        description: repo.description ?? undefined,
+        primary_language: repo.primary_language ?? undefined,
+        stars_count: repo.stars_count ?? undefined,
+        forks_count: repo.forks_count ?? undefined,
+        open_issues_count: repo.open_issues_count ?? undefined,
         is_fork: repo.is_fork,
         is_private: repo.is_private,
-        last_pushed_at: repo.last_pushed_at,
+        last_pushed_at: repo.last_pushed_at ?? undefined,
 
         userId: repo.userId,
       },

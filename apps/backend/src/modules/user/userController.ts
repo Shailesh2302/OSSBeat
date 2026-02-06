@@ -9,7 +9,11 @@ export async function getUser(req: Request, res: Response) {
       throw new Error("User not found");
     }
 
-   const userData = userInfo(user);
+    const userData = userInfo(user);
+
+    if (!userData) {
+      throw new Error("Database error while fetching the user data");
+    }
 
     return res.status(200).json(userData);
   } catch (error: any) {

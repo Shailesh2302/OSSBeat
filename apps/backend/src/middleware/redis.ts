@@ -39,14 +39,14 @@ export const getCachedData =
   async (req: Request, res: Response, next: NextFunction) => {
     const redis = await getRedis();
     const key = keyFn(req);
-    console.log("key : ", key);
+    // console.log("key : ", key);
     const cachedData = await redis.get(key);
 
-    console.log(
-      "form the rediscached data function => ",
-      "given cached data : ",
-      JSON.parse(cachedData!),
-    );
+    // console.log(
+    //   "form the rediscached data function => ",
+    //   "given cached data : ",
+    //   JSON.parse(cachedData!),
+    // );
     if (cachedData) {
       return res.json(JSON.parse(cachedData));
     }

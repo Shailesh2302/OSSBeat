@@ -95,7 +95,7 @@ export async function githubCallback(req: Request, res: Response) {
   } catch (e) {
     console.error(e);
     throw new AppError("OAuth failed",401)
-    return res.status(500).json({ error: "OAuth Failed" });
+    // return res.status(500).json({ error: "OAuth Failed" });
   }
 }
 
