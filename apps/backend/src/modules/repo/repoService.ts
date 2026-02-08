@@ -45,7 +45,6 @@ const SEARCH_REPOS_QUERY = `
   }
 `;
 
-
 function buildSearchQuery({
   language,
   minStars,
@@ -64,7 +63,7 @@ function buildSearchQuery({
   if (minStars && minStars > 0) {
     parts.push(`stars:>=${minStars}`);
   } else {
-    parts.push("stars:>=10");
+    parts.push("stars:>=100");
   }
 
   if (language && language !== "all") {

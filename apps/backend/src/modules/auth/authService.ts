@@ -51,7 +51,7 @@ export async function fetchGithubUser(
     headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
-  console.log("repoResp", repoResp.data[0]);
+  // console.log("repoResp", repoResp.data[0]);
 
   // const primaryEmail =
   //   (Array.isArray(emailsResp.data)

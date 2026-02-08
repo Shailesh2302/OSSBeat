@@ -1,12 +1,9 @@
 import { Router } from "express";
-import { findIssues } from "./featureController";
-
-
+import { findgsoc, findIssues } from "./featureController";
 
 const router: Router = Router();
 
-
-router.get("/getIssues",findIssues);
-
+router.get("/getIssues", findIssues);
+router.get("/getgsoc", findgsoc);
 
 export default router;

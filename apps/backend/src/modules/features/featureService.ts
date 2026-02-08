@@ -1,4 +1,6 @@
+import axios from "axios";
 import { getGithubAppToken } from "../../lib/github/getGithubAppToken";
+import { AppError } from "../../utils/AppError";
 import { findAllIssues } from "./featureRepository";
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
@@ -46,7 +48,79 @@ export const getIssuesFromTopRepos = async () => {
 
     // console.log("---------------------", res.data.data.search.nodes);
     return res.data.data.search.nodes;
-  } catch (error) {}
+  } catch (e) {
+    console.log(e);
+    throw new AppError("Internal Error", 401);
+  }
 };
 
-getIssuesFromTopRepos().then(console.log);
+export const getGsocReposGraphQL = async () => {
+  try {
+    const token = await getGithubAppToken();
+
+    const query = `
+      query GetGsocRepos($query: String!, $limit: Int!) {
+        search(query: $query, type: REPOSITORY, first: $limit) {
+          repositoryCount
+          nodes {
+            ... on Repository {
+              id
+              name
+              nameWithOwner
+              url
+              description
+              stargazerCount
+              forkCount
+              isFork
+              pushedAt
+              primaryLanguage {
+                name
+              }
+              owner {
+                login
+                avatarUrl
+              }
+              repositoryTopics(first: 10) {
+                nodes {
+                  topic {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const variables = {
+      query:
+        "topic:gsoc OR topic:google-summer-of-code OR gsoc in:readme stars:>50 fork:false",
+      limit: 50,
+    };
+
+    const res = await axios.post(
+      "https://api.github.com/graphql",
+      {
+        query,
+        variables,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+        },
+      },
+    );
+
+    if (res.data.errors) {
+      console.error("GraphQL errors:", res.data.errors);
+      throw new Error("GitHub GraphQL error");
+    }
+
+    return res.data.data.search.nodes;
+  } catch (err: any) {
+    console.error(err?.response?.data || err.message);
+    throw new AppError("Failed to fetch GSoC repositories (GraphQL)", 500);
+  }
+};
