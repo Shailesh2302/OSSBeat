@@ -26,7 +26,7 @@ export function generateGithubAuthUrl() {
 }
 
 export async function exchangeGithubCodeForToken(
-  code: string
+  code: string,
 ): Promise<string> {
   try {
     const tokens = await github.validateAuthorizationCode(code);
@@ -37,32 +37,17 @@ export async function exchangeGithubCodeForToken(
 }
 
 export async function fetchGithubUser(
-  githubAccessToken: string
+  githubAccessToken: string,
 ): Promise<GithubProfile> {
   const userResp = await axios.get("https://api.github.com/user", {
     headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
-  // const emailsResp = await axios.get("https://api.github.com/user/emails", {
-  //   headers: { Authorization: `Bearer ${githubAccessToken}` },
-  // });
-
   const repoResp = await axios.get(`${userResp.data.repos_url}`, {
     headers: { Authorization: `Bearer ${githubAccessToken}` },
   });
 
-  // console.log("repoResp", repoResp.data[0]);
-
-  // const primaryEmail =
-  //   (Array.isArray(emailsResp.data)
-  //     ? emailsResp.data.find((e: any) => e.primary)?.email
-  //     : null) ?? null;
-
   const user = userResp.data;
-
-  // console.log("----------------------------------------------------------");
-  // console.log("userData : ", userResp.data);
-  // console.log("----------------------------------------------------------");
 
   return {
     github_id: String(user.id),
@@ -75,7 +60,7 @@ export async function fetchGithubUser(
 }
 
 export async function fetchUserRepos(
-  githubAccessToken: string
+  githubAccessToken: string,
 ): Promise<UserRepos> {
   const userRepos = await axios.get("https://api.github.com/user/repos", {
     headers: {
@@ -87,11 +72,7 @@ export async function fetchUserRepos(
       sort: "updated",
     },
   });
-  
-  // console.log("----------------------------------------------------------");
-  // console.log("userData : ", userRepos.data);
-  // console.log("----------------------------------------------------------");
-  
+
   return userRepos.data;
 }
 
@@ -169,7 +150,7 @@ export async function upsertRepos(data: UserRepos) {
 
 export async function upsertUser(
   data: GithubProfile,
-  githubAccessToken: string
+  githubAccessToken: string,
 ) {
   const encryptedToken = encrypt(githubAccessToken);
 
@@ -282,7 +263,7 @@ export async function getUserFromAccessToken(token: string) {
 
 export async function upsertUserAndRepoToDB(
   ghUser: GithubProfile,
-  githubAccessToken: string
+  githubAccessToken: string,
 ) {
   try {
     const user = await upsertUser(ghUser, githubAccessToken);

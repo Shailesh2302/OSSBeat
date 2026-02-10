@@ -67,7 +67,7 @@ export async function githubCallback(req: Request, res: Response) {
     const ghUser = await fetchGithubUser(githubAccessToken);
     const { user, message } = await upsertUserAndRepoToDB(
       ghUser,
-      githubAccessToken
+      githubAccessToken,
     );
 
     if (message !== "success") {
@@ -75,9 +75,6 @@ export async function githubCallback(req: Request, res: Response) {
     }
 
     const { accessToken, refreshToken } = await issueTokensForUser(user.id);
-
-    // console.log("refreshToken: ", refreshToken);
-    // console.log("accessToken: ", accessToken); // Add this log
 
     const isProd = process.env.NODE_ENV === "production";
 
@@ -90,11 +87,11 @@ export async function githubCallback(req: Request, res: Response) {
     });
 
     return res.redirect(
-      `${process.env.FRONTEND_URL}/auth/success?token=${accessToken}`
+      `${process.env.FRONTEND_URL}/auth/success?token=${accessToken}`,
     );
   } catch (e) {
     console.error(e);
-    throw new AppError("OAuth failed",401)
+    throw new AppError("OAuth failed", 401);
     // return res.status(500).json({ error: "OAuth Failed" });
   }
 }
@@ -155,12 +152,7 @@ export async function getToken(req: Request, res: Response) {
   const headerAccessToken = req.headers.accessToken;
   const cookieAccessToken = req.cookies.accessToken;
   const token2 = req.headers.authorization;
-  // console.log("token 1 : ", token1);
-  // console.log("cookieAccessToken : ", cookieAccessToken);
-  // console.log("headerAccessToken : ", headerAccessToken);
 
-  // console.log("token 2 : ", token2);
   const token3 = token2?.split(" ")[1];
-  // console.log("token 3 : ", token3);
   return res.json({ token1: token1, token2: token2, token3: token3 });
 }
