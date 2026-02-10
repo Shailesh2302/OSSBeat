@@ -33,7 +33,7 @@ export async function getDiscoverRepos(req: Request, res: Response) {
       : `discover:repos:first`;
 
     await redis.setEx(cacheKey, 60, JSON.stringify(data));
-    // console.log(data.repos[0],"cachedkey : ",cacheKey);
+
     res.json(data);
   } catch (err) {
     console.error(err);

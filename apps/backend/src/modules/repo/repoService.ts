@@ -81,7 +81,7 @@ function buildSearchQuery({
   if (topic && topic.trim().length > 0) {
     parts.push(`topic:${topic}`);
   }
-  // console.log("parts : ", parts.join(" "));
+
   return parts.join(" ");
 }
 
@@ -125,7 +125,7 @@ export const repoService = {
     });
 
     if (!owner) {
-      // webhook for unknown user → ignore safely
+      
       return;
     }
 

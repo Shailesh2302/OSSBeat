@@ -7,7 +7,8 @@ export function globalErrorHandler(
   res: Response,
   next: NextFunction
 ) {
-  // Default values
+
+  
   let statusCode = 500;
   let message = "Internal server error";
 
@@ -16,7 +17,7 @@ export function globalErrorHandler(
     message = err.message;
   }
 
-  // Log only in non-test env
+
   if (process.env.NODE_ENV !== "test") {
     console.error("🔥 Error:", {
       method: req.method,

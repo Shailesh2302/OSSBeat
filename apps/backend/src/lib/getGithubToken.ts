@@ -10,9 +10,9 @@ export async function getToken(req: Request, res: Response) {
     throw new Error("user not found");
   }
 
-  // console.log("user :", user);
+
   const userId = user.id;
-  // console.log("userTd : ", userId);
+
 
   const provider = await prisma.provider.findFirst({
     where: { userId, provider: "GITHUB" },

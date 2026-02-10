@@ -13,7 +13,7 @@ if (!GITHUB_TOKEN_ENC_KEY || GITHUB_TOKEN_ENC_KEY.length !== 64) {
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
 
-// ✅ CORRECT: convert hex → 32-byte buffer
+
 const KEY = Buffer.from(GITHUB_TOKEN_ENC_KEY, "hex");
 
 export function encrypt(text: string): string {

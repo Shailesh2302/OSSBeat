@@ -46,7 +46,6 @@ export const getIssuesFromTopRepos = async () => {
       throw new Error(JSON.stringify(res.data.errors));
     }
 
-    // console.log("---------------------", res.data.data.search.nodes);
     return res.data.data.search.nodes;
   } catch (e) {
     console.log(e);

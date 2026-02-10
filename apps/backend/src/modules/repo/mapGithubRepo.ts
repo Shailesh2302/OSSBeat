@@ -6,7 +6,7 @@ export function mapGithubRepo(repo: any) {
     owner_id: Number(repo.owner.id),
     owner_profile_url: repo.owner.url,
 
-    // 🔥 THIS WAS THE BUG
+
     owner_avatar_url: repo.owner.avatarUrl,
 
     name: repo.name,

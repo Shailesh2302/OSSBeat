@@ -30,7 +30,7 @@ export async function exchangeGithubCodeForToken(
 ): Promise<string> {
   try {
     const tokens = await github.validateAuthorizationCode(code);
-    return tokens.accessToken(); // your Arctic version
+    return tokens.accessToken(); 
   } catch {
     throw new Error("GitHub OAuth token exchange failed");
   }

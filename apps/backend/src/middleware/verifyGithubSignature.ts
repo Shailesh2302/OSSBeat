@@ -10,7 +10,8 @@ export function verifyGithubSignature(
   const signature = req.headers["x-hub-signature-256"];
   const secret = process.env.GITHUB_WEBHOOK_SECRET!;
   const rawBody = (req as any).rawBody;
-  // console.log(req.headers);
+
+  
   if (typeof signature !== "string") {
     return res.status(400).send({
       message: "Missing signature",

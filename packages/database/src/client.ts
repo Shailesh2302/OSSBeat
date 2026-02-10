@@ -11,7 +11,7 @@ if (!connectionString) {
 const pool = new pg.Pool({
   connectionString,
   ssl: {
-    rejectUnauthorized: false, // Required for Neon
+    rejectUnauthorized: false, 
   },
 });
 
@@ -19,10 +19,10 @@ const adapter = new PrismaPg(pool);
 
 export const prisma = new PrismaClient({
   adapter,
-  log: ['error', 'warn'], // Add logging
+  log: ['error', 'warn'], 
 });
 
-// Graceful shutdown
+
 process.on('beforeExit', async () => {
   await pool.end();
 });

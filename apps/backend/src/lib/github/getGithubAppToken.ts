@@ -1,14 +1,10 @@
 import "dotenv/config";
 import { createAppAuth } from "@octokit/auth-app";
 import { config } from "dotenv";
-// import fs from "fs";
-// import path from "path";
-
-// const privateKey = fs.readFileSync(
-//   path.resolve(process.env.GITHUB_PRIVATE_KEY_PATH!),
-//   "utf8"
-// );
 config();
+
+
+
 const rawKey = process.env.PRIVATE_KEY;
 if (!rawKey) {
   throw new Error("PRIVATE_KEY is missing in environment variables");
@@ -16,11 +12,7 @@ if (!rawKey) {
 
 const privateKey = rawKey.replace(/\\n/g, "\n");
 
-// console.log(
-//   process.env.GITHUB_APP_ID,
-//   process.env.GITHUB_INSTALLATION_ID,
-//   privateKey.startsWith("-----BEGIN RSA PRIVATE KEY-----")
-// );
+
 
 let cachedToken: string | null = null;
 let expiresAt = 0;

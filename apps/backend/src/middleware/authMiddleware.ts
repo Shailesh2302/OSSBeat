@@ -16,16 +16,9 @@ export const protectRoute = async (
   next: NextFunction
 ) => {
   try {
-    // console.log("req.headers.authorization : ", req.headers.authorization);
 
     const authHeader = req.headers.authorization;
-    const refreshToken = req.cookies.refreshToken;
 
-    // console.log(
-    //   "refreshToken from the req.cookies.refreshToken : ",
-    //   refreshToken
-    // );
-    // console.log(authHeader);
     if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Missing access token" });
     }
