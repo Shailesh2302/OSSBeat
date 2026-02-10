@@ -1,0 +1,4 @@
+- [ ] Fix error handling in apps/backend/src/modules/auth/authController.ts githubCallback function
+- [ ] Remove commented-out logs in apps/backend/src/modules/auth/authController.ts
+- [ ] Fix error handling in apps/backend/src/modules/user/userController.ts getUser function
+- [ ] Remove commented-out code in apps/backend/src/modules/auth/authService.ts

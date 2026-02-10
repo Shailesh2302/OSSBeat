@@ -20,7 +20,7 @@ export async function refreshAccessToken(): Promise<boolean> {
   }
 }
 
-export async function getRepos({ next , cursor }) {
+export async function getRepos({ next, cursor }: { next?: boolean; cursor?: string }) {
   const res = await axiosPublicInstance.get(
     `/repo/discover${next && cursor ? `?cursor=${cursor}` : ""}`
   );
