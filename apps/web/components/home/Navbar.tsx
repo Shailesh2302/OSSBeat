@@ -15,10 +15,10 @@ export default function Navbar() {
             Home
           </li>
           <li className="cursor-pointer hover:text-black transition">
-            Projects
+            Features
           </li>
           <li className="cursor-pointer hover:text-black transition">
-            Snippets
+            Demo
           </li>
           <li className="cursor-pointer hover:text-black transition">
             About

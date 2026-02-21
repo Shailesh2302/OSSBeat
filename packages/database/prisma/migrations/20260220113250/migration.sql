@@ -1,25 +1,39 @@
+-- CreateEnum
+CREATE TYPE "ProviderName" AS ENUM ('GOOGLE', 'GITHUB');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT,
-    "avatar_url" TEXT NOT NULL DEFAULT 'temp avatar_url',
+    "avatar_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "display_name" TEXT DEFAULT 'temp display_name',
-    "github_id" TEXT NOT NULL,
+    "display_name" TEXT,
     "last_login_at" TIMESTAMP(3),
-    "profile_url" TEXT NOT NULL DEFAULT 'temp profile_url',
-    "username" TEXT NOT NULL DEFAULT 'temp username',
+    "profile_url" TEXT,
+    "username" TEXT NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Provider" (
+    "id" TEXT NOT NULL,
+    "provider" "ProviderName" NOT NULL,
+    "providerUserId" TEXT NOT NULL,
+    "accessTokenEnc" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Provider_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "RefreshToken" (
     "id" TEXT NOT NULL,
     "tokenHash" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "RefreshToken_pkey" PRIMARY KEY ("id")
 );
@@ -28,18 +42,22 @@ CREATE TABLE "RefreshToken" (
 CREATE TABLE "Repository" (
     "id" TEXT NOT NULL,
     "github_repo_id" TEXT NOT NULL,
-    "owner" TEXT NOT NULL,
+    "owner_login" TEXT NOT NULL,
+    "owner_id" INTEGER NOT NULL,
+    "owner_profile_url" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "full_name" TEXT NOT NULL,
     "html_url" TEXT NOT NULL,
     "description" TEXT,
     "primary_language" TEXT,
-    "stars_count" INTEGER,
-    "forks_count" INTEGER,
-    "open_issues_count" INTEGER,
+    "stars_count" INTEGER NOT NULL DEFAULT 0,
+    "forks_count" INTEGER NOT NULL DEFAULT 0,
+    "open_issues_count" INTEGER NOT NULL DEFAULT 0,
+    "topics" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "is_fork" BOOLEAN NOT NULL DEFAULT false,
     "is_private" BOOLEAN NOT NULL DEFAULT false,
     "last_pushed_at" TIMESTAMP(3),
+    "userId" TEXT,
 
     CONSTRAINT "Repository_pkey" PRIMARY KEY ("id")
 );
@@ -97,7 +115,13 @@ CREATE TABLE "RepoFetchHistory" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_github_id_key" ON "User"("github_id");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE INDEX "Provider_userId_idx" ON "Provider"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Provider_provider_providerUserId_key" ON "Provider"("provider", "providerUserId");
 
 -- CreateIndex
 CREATE INDEX "RefreshToken_userId_idx" ON "RefreshToken"("userId");
@@ -109,10 +133,22 @@ CREATE UNIQUE INDEX "Repository_github_repo_id_key" ON "Repository"("github_repo
 CREATE UNIQUE INDEX "Repository_full_name_key" ON "Repository"("full_name");
 
 -- CreateIndex
+CREATE INDEX "Repository_userId_idx" ON "Repository"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Contribution_user_id_repo_id_key" ON "Contribution"("user_id", "repo_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "UserRepoStat_user_id_repo_id_key" ON "UserRepoStat"("user_id", "repo_id");
 
 -- AddForeignKey
+ALTER TABLE "Provider" ADD CONSTRAINT "Provider_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Repository" ADD CONSTRAINT "Repository_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contribution" ADD CONSTRAINT "Contribution_repo_id_fkey" FOREIGN KEY ("repo_id") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -24,8 +24,8 @@ export const HeroSection = () => {
     >
       <Navbar />
       <main className="w-full">
-        <div className="flex flex-col pt-40 gap-6 justify-center items-center">
-          <h1 className="text-background text-4xl  text-shadow-2xs md:text-5xl lg:text-6xl font-extrabold text-center">
+        <div className="flex flex-col pt-40 gap-5 justify-center items-center">
+          <h1 className="text-background text-4xl  text-shadow-2xs md:text-6xl lg:text-7xl font-extrabold text-center">
             <span className="block">One Platform.</span>
             <span className="block">Every Open Source Opportunity.</span>
           </h1>
@@ -36,7 +36,7 @@ export const HeroSection = () => {
               fundamentals,
               <br />
               get expert mentorship for GSoC, and make meaningful contributions
-              toda20
+              today.
             </h5>
           </div>
         </div>
@@ -51,7 +51,7 @@ export const HeroSection = () => {
             </Link>
           </Button>
         </div>
-        <div className="pt-45">
+        <div className="pt-75">
           <RunningDog />
           <OpenSourceJourneyChart />
         </div>

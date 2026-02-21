@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { shareTech } from "./fonts";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -28,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={geist.className}>
+      <body className={shareTech.variable}>
         {" "}
         <ThemeProvider
           attribute="class"
