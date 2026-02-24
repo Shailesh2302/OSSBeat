@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { findgsoc, findIssues } from "./featureController";
+import { findgsoc, findHackomberfestReposGraphQL, findIssues } from "./featureController";
 
 const router: Router = Router();
 
-router.get("/getIssues", findIssues);
+router.get("/getissues", findIssues);
 router.get("/getgsoc", findgsoc);
+router.get("/gethack", findHackomberfestReposGraphQL);
 
 export default router;

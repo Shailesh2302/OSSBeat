@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getGsocReposGraphQL, getIssuesFromTopRepos } from "./featureService";
+import { getGsocReposGraphQL, getHackomberfestReposGraphQL, getIssuesFromTopRepos } from "./featureService";
 import { AppError } from "../../utils/AppError";
 
 export const findIssues = async (req: Request, res: Response) => {
@@ -10,6 +10,7 @@ export const findIssues = async (req: Request, res: Response) => {
   } catch (error) {}
 };
 
+
 export const findgsoc = async (req: Request, res: Response) => {
   try {
     const response = await getGsocReposGraphQL();
@@ -19,3 +20,14 @@ export const findgsoc = async (req: Request, res: Response) => {
     throw new AppError("Internal Error");
   }
 };
+
+
+export const findHackomberfestReposGraphQL = async (req: Request, res:Response) => {
+  try {
+    const response = await getHackomberfestReposGraphQL();
+
+    return res.json(response);
+  } catch (error) {
+    console.log("not working");
+  }
+}
