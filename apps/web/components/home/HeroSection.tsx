@@ -9,6 +9,8 @@ import RunningDog from "./RunningDog";
 import { Button } from "@/components/ui/button";
 import Navbar from "./Navbar";
 import Link from "next/link";
+import About from "./navbar/About";
+import Contact from "./navbar/Contact";
 
 export const HeroSection = () => {
   const [loading, setLoading] = useState(false);
@@ -18,6 +20,8 @@ export const HeroSection = () => {
   //   window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`;
   // };
   return (
+
+  
     <section
       className="flex items-start justify-center min-h-screen
       bg-linear-to-b from-foreground from-30% via-gray-500 via-50% to-background to-75%"
@@ -51,7 +55,7 @@ export const HeroSection = () => {
             </Link>
           </Button>
         </div>
-        <div className="pt-75">
+        <div className="lg:pt-75">
           <RunningDog />
           <OpenSourceJourneyChart />
         </div>

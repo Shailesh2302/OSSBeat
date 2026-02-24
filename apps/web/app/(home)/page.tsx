@@ -1,9 +1,7 @@
-import { HeroSection } from "@/components/home/HeroSection";
+import Home from "@/components/home/Home";
 
 export default function HomePage() {
   return (
-    <div className="h-full">
-      <HeroSection />
-    </div>
+    <Home/>
   );
 }
