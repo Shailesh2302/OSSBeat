@@ -6,8 +6,9 @@ const Navbar = () => {
     <nav className="flex flex-col gap-3">
       {[
         { href: "/dashboard/home", label: "Home" },
-        { href: "/dashboard/home/gsoc", label: "GSoC" },
+        { href: "/dashboard/home/hacktoberfest", label: "HacktoberFest" },
         { href: "/dashboard/home/issues", label: "Issues" },
+        { href: "/dashboard/home/gsoc", label: "GSoC" },
       ].map((item) => (
         <Link
           key={item.href}
