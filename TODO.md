@@ -1,4 +1,8 @@
-- [ ] Fix error handling in apps/backend/src/modules/auth/authController.ts githubCallback function
-- [ ] Remove commented-out logs in apps/backend/src/modules/auth/authController.ts
-- [ ] Fix error handling in apps/backend/src/modules/user/userController.ts getUser function
-- [ ] Remove commented-out code in apps/backend/src/modules/auth/authService.ts
+# TODO - GSoC Frontend UI Implementation
+
+## Tasks
+- [x] 1. Understand the GSoC backend API and data structure
+- [x] 2. Review frontend patterns from similar pages
+- [x] 3. Implement GSoC page at apps/web/app/dashboard/home/gsoc/page.tsx
+- [x] 4. Test the implementation
+

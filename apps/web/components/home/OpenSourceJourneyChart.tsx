@@ -153,10 +153,17 @@ function buildGrid(text: string) {
     }
 
     for (let r = 0; r < 7; r++) {
+      const row = letter[r];
+      if (!row) continue;
+
       for (let c = 0; c < 5; c++) {
-        if (letter[r][c]) {
-          grid[textOffset + r][col + c] = 1;
-        }
+        if (!row[c]) continue;
+        const targetRow = grid[textOffset + r];
+        if (!targetRow) continue;
+        const targetIdx = col + c;
+        if (targetIdx < 0 || targetIdx >= targetRow.length) continue;
+
+        targetRow[targetIdx] = 1;
       }
     }
 

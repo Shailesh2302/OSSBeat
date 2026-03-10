@@ -1,35 +1,22 @@
 "use client";
 
-import { useState } from "react";
-
-import { OnButton } from "../web/Button";
 import { GithubIcon } from "lucide-react";
 import OpenSourceJourneyChart from "./OpenSourceJourneyChart";
 import RunningDog from "./RunningDog";
 import { Button } from "@/components/ui/button";
 import Navbar from "./Navbar";
 import Link from "next/link";
-import About from "./navbar/About";
-import Contact from "./navbar/Contact";
 
 export const HeroSection = () => {
-  const [loading, setLoading] = useState(false);
-
-  // const handleLogin = () => {
-  //   setLoading(true);
-  //   window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`;
-  // };
   return (
-
-  
     <section
-      className="flex items-start justify-center min-h-screen
-      bg-linear-to-b from-foreground from-30% via-gray-500 via-50% to-background to-75%"
+      id="home"
+      className="flex items-start justify-center min-h-screen bg-linear-to-b from-foreground from-30% via-gray-500 via-50% to-background to-75%"
     >
       <Navbar />
       <main className="w-full">
         <div className="flex flex-col pt-40 gap-5 justify-center items-center">
-          <h1 className="text-background text-4xl  text-shadow-2xs md:text-6xl lg:text-7xl font-extrabold text-center">
+          <h1 className="text-background text-4xl text-shadow-2xs md:text-6xl lg:text-7xl font-extrabold text-center">
             <span className="block">One Platform.</span>
             <span className="block">Every Open Source Opportunity.</span>
           </h1>
@@ -45,7 +32,7 @@ export const HeroSection = () => {
           </div>
         </div>
         <div className="flex justify-center items-center">
-          <Button className=" flex flex-row bg-secondary-100 mt-6 px-5 py-5 shadow-accent-100 md:text-md lg:text-lg text-foreground hover:bg-foreground-950 items-center">
+          <Button className="flex flex-row bg-secondary-100 mt-6 px-5 py-5 shadow-accent-100 md:text-md lg:text-lg text-foreground hover:bg-foreground-950 items-center">
             <Link
               href="/dashboard/home"
               className="flex justify-center items-center gap-2"

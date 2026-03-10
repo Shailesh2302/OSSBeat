@@ -71,6 +71,7 @@ export default function DiscoverPage() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        if (!entry) return;
         if (entry.isIntersecting && !loading) {
           loadRepos(true);
         }
