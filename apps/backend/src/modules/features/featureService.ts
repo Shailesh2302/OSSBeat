@@ -7,7 +7,7 @@ const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
 const query = `
 query TopReposWithLatestIssues {
-  search(query: "stars:>5000", type: REPOSITORY, first: 1) {
+  search(query: "stars:>500", type: REPOSITORY, first: 100) {
    pageInfo {
         hasNextPage
         endCursor
@@ -46,7 +46,9 @@ export const getIssuesFromTopRepos = async () => {
       throw new Error(JSON.stringify(res.data.errors));
     }
 
+    console.log(res.data.data.search);
     return res.data.data.search.nodes;
+
   } catch (e) {
     console.log(e);
     throw new AppError("Internal Error", 401);

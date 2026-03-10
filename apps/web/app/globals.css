@@ -794,3 +794,12 @@
     background: linear-gradient(135deg, var(--info-400), var(--info-600));
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
