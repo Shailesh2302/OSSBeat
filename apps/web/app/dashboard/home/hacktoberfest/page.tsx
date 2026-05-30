@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { axiosPublicInstance } from "@/utils/axios-public";
 import { GitHubRepo } from "@/types/featureTypes";
 import { RepoSkeleton } from "@/components/skeleton/RepoSkeleton";
@@ -33,19 +34,28 @@ export default function HacktoberfestPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white">
       <div className="relative max-w-7xl mx-auto px-6 py-12">
-        <div className="mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-10"
+        >
           <h1 className="text-4xl font-bold">Hacktoberfest Repositories</h1>
           <p className="mt-2 text-neutral-400 max-w-2xl">
             Browse repositories participating in Hacktoberfest with open issues ready for contributions.
           </p>
-        </div>
+        </motion.div>
 
         {loading && <RepoSkeleton count={9} />}
 
         {error && (
-          <div className="text-center text-red-200 bg-red-500/10 border border-red-500/20 p-6 rounded-xl">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center text-red-200 bg-red-500/10 border border-red-500/20 p-6 rounded-xl"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         {!loading && !error && repos.length === 0 && (
@@ -53,11 +63,19 @@ export default function HacktoberfestPage() {
         )}
 
         {!loading && !error && repos.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {repos.map((repo) => (
-              <RepoCard key={repo.id} repo={repo} />
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.05 } },
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {repos.map((repo, idx) => (
+              <RepoCard key={repo.id} repo={repo} index={idx} />
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

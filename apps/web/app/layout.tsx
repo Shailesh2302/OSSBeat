@@ -28,16 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth" >
-      <body className={shareTech.variable}>
-        {" "}
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <body className={`${geist.className} ${shareTech.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen w-full md:bg-amber-800 sm:bg-yellow-300 lg:bg-blue-950">
+          <main className="min-h-screen w-full bg-background">
             <div className="mx-auto md:max-w-8xl">{children}</div>
           </main>
         </ThemeProvider>

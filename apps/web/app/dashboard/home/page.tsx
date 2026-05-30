@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { Repo } from "@/types/repoTypes";
 import { axiosPublicInstance } from "@/utils/axios-public";
 import { RepoSkeleton } from "@/components/skeleton/RepoSkeleton";
@@ -173,18 +174,15 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white">
-      {/* Subtle ambient glow */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-neutral-100 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-neutral-100 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 py-12">
-        {/* HEADER */}
         <div className="mb-14">
           <div className="flex items-start justify-between gap-8 flex-wrap">
             <div className="flex-1 min-w-[300px]">
-              {/* Title with elegant styling */}
               <div className="mb-8">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="w-1 h-12 bg-gradient-to-b from-neutral-100 to-neutral-600 rounded-full" />
@@ -198,7 +196,6 @@ export default function DiscoverPage() {
                 </p>
               </div>
 
-              {/* Enhanced search bar with milky accent */}
               <div className="relative mt-6 max-w-2xl group pl-7">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-neutral-100/10 to-neutral-100/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur" />
                 <div className="relative flex items-center">
@@ -228,7 +225,6 @@ export default function DiscoverPage() {
               </div>
             </div>
 
-            {/* Filters with refined styling */}
             <div className="flex items-center gap-3 pt-2 flex-wrap">
               <div className="relative group">
                 <div className="absolute inset-0 bg-neutral-100/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -267,7 +263,6 @@ export default function DiscoverPage() {
           </div>
         </div>
 
-        {/* TOPICS with refined styling */}
         {majorTopics.length > 0 && (
           <div className="mb-12 pl-7">
             <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -301,76 +296,83 @@ export default function DiscoverPage() {
           </div>
         )}
 
-        {/* GRID with premium cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRepos.map((r, idx) => (
-            <a
-              key={r.github_repo_id}
-              href={r.html_url}
-              target="_blank"
-              rel="noreferrer"
-              className="group relative rounded-2xl border border-neutral-800/50 bg-neutral-900/40 backdrop-blur-sm hover:bg-neutral-900/60 hover:border-neutral-700 transition-all duration-300 overflow-hidden"
-            >
-              {/* Subtle hover glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-neutral-100/0 via-neutral-100/0 to-neutral-100/0 group-hover:from-neutral-100/5 group-hover:via-neutral-100/3 group-hover:to-neutral-100/0 transition-all duration-500 pointer-events-none" />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${filters.language}-${filters.popularity}-${search}-${selectedTopics.join(",")}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {filteredRepos.map((r, idx) => (
+              <motion.a
+                key={r.github_repo_id}
+                href={r.html_url}
+                target="_blank"
+                rel="noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.03, duration: 0.3 }}
+                className="group relative rounded-2xl border border-neutral-800/50 bg-neutral-900/40 backdrop-blur-sm hover:bg-neutral-900/60 hover:border-neutral-700 transition-all duration-300 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-neutral-100/0 via-neutral-100/0 to-neutral-100/0 group-hover:from-neutral-100/5 group-hover:via-neutral-100/3 group-hover:to-neutral-100/0 transition-all duration-500 pointer-events-none" />
 
-              {/* Top edge highlight */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-100/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-100/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-              <div className="relative p-6 flex flex-col h-full">
-                <div className="flex gap-4">
-                  <div className="relative">
-                    {/* Avatar glow effect */}
-                    <div className="absolute inset-0 bg-neutral-100/10 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <Image
-                      src={r.owner_avatar_url}
-                      alt={r.owner_login}
-                      width={48}
-                      height={48}
-                      className="relative rounded-xl object-cover ring-1 ring-neutral-800 group-hover:ring-neutral-700 transition-all"
-                    />
+                <div className="relative p-6 flex flex-col h-full">
+                  <div className="flex gap-4">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-neutral-100/10 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Image
+                        src={r.owner_avatar_url}
+                        alt={r.owner_login}
+                        width={48}
+                        height={48}
+                        className="relative rounded-xl object-cover ring-1 ring-neutral-800 group-hover:ring-neutral-700 transition-all"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base font-semibold truncate text-neutral-100 group-hover:text-white transition-colors">
+                        {r.full_name}
+                      </h3>
+                      <p className="text-sm text-neutral-500 truncate">
+                        {r.owner_login}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-base font-semibold truncate text-neutral-100 group-hover:text-white transition-colors">
-                      {r.full_name}
-                    </h3>
-                    <p className="text-sm text-neutral-500 truncate">
-                      {r.owner_login}
-                    </p>
+
+                  <p className="mt-4 text-sm text-neutral-400 line-clamp-2 leading-relaxed group-hover:text-neutral-300 transition-colors">
+                    {r.description ?? "No description provided."}
+                  </p>
+
+                  <div className="mt-auto pt-5 flex items-center justify-between text-sm border-t border-neutral-800/50 group-hover:border-neutral-700/50 transition-colors">
+                    <div className="flex gap-5 text-neutral-500 group-hover:text-neutral-400 transition-colors">
+                      <span className="flex items-center gap-2">
+                        <span className="text-base">⭐</span>
+                        <span className="font-medium text-xs">
+                          {r.stars_count.toLocaleString()}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <span className="text-base">🍴</span>
+                        <span className="font-medium text-xs">
+                          {r.forks_count.toLocaleString()}
+                        </span>
+                      </span>
+                    </div>
+                    {r.primary_language && (
+                      <span className="px-3 py-1.5 rounded-lg bg-neutral-800/60 text-xs font-medium text-neutral-300 border border-neutral-700/50 group-hover:bg-neutral-800 group-hover:border-neutral-600 group-hover:text-neutral-100 transition-all">
+                        {r.primary_language}
+                      </span>
+                    )}
                   </div>
                 </div>
+              </motion.a>
+            ))}
+          </motion.div>
+        </AnimatePresence>
 
-                <p className="mt-4 text-sm text-neutral-400 line-clamp-2 leading-relaxed group-hover:text-neutral-300 transition-colors">
-                  {r.description ?? "No description provided."}
-                </p>
-
-                <div className="mt-auto pt-5 flex items-center justify-between text-sm border-t border-neutral-800/50 group-hover:border-neutral-700/50 transition-colors">
-                  <div className="flex gap-5 text-neutral-500 group-hover:text-neutral-400 transition-colors">
-                    <span className="flex items-center gap-2">
-                      <span className="text-base">⭐</span>
-                      <span className="font-medium text-xs">
-                        {r.stars_count.toLocaleString()}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <span className="text-base">🍴</span>
-                      <span className="font-medium text-xs">
-                        {r.forks_count.toLocaleString()}
-                      </span>
-                    </span>
-                  </div>
-                  {r.primary_language && (
-                    <span className="px-3 py-1.5 rounded-lg bg-neutral-800/60 text-xs font-medium text-neutral-300 border border-neutral-700/50 group-hover:bg-neutral-800 group-hover:border-neutral-600 group-hover:text-neutral-100 transition-all">
-                      {r.primary_language}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-
-        {/* LOADING INDICATOR */}
         {loading && hasNextPage && (
           <div className="mt-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -403,7 +405,6 @@ export default function DiscoverPage() {
           </div>
         )}
 
-        {/* SENTINEL */}
         {hasNextPage && <div ref={loadMoreRef} className="h-1" />}
       </div>
     </div>

@@ -1,22 +1,58 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import type { GitHubRepo } from "@/types/featureTypes";
+import { animate } from "animejs";
 
 interface RepoCardProps {
   repo: GitHubRepo;
+  index?: number;
 }
 
-export function RepoCard({ repo }: RepoCardProps) {
+export function RepoCard({ repo, index = 0 }: RepoCardProps) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
   const topics = repo.repositoryTopics?.nodes?.map((n) => n.topic.name) ?? [];
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+    animate(cardRef.current, {
+      opacity: [0, 1],
+      translateY: [20, 0],
+      delay: index * 60,
+      duration: 500,
+      easing: "easeOutQuart",
+    });
+  }, [index]);
+
+  const handleMouseEnter = () => {
+    if (!cardRef.current) return;
+    animate(cardRef.current, {
+      scale: 1.02,
+      duration: 300,
+      easing: "easeOutCubic",
+    });
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    animate(cardRef.current, {
+      scale: 1,
+      duration: 300,
+      easing: "easeOutCubic",
+    });
+  };
 
   return (
     <a
+      ref={cardRef}
       href={repo.url}
       target="_blank"
       rel="noreferrer"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className="group relative rounded-2xl border border-neutral-800/50 bg-neutral-900/40 backdrop-blur-sm hover:bg-neutral-900/60 hover:border-neutral-700 transition-all duration-300 overflow-hidden"
+      style={{ opacity: 0 }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-neutral-100/0 via-neutral-100/0 to-neutral-100/0 group-hover:from-neutral-100/5 group-hover:via-neutral-100/3 group-hover:to-neutral-100/0 transition-all duration-500 pointer-events-none" />
       <div className="p-6 flex flex-col h-full">

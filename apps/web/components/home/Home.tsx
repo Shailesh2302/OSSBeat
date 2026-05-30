@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import PageTransition from "@/components/animations/PageTransition";
 import { HeroSection } from "./HeroSection";
 import Features from "./Features";
 import Demo from "./Demo";
@@ -10,16 +13,18 @@ import Footer from "./Footer";
 
 const Home = () => {
   return (
-    <div className="h-full">
-      <HeroSection />
-      <Features />
-      <Demo />
-      <Testimonials />
-      <FAQ />
-      <About />
-      <Contact />
-      <Footer />
-    </div>
+    <PageTransition>
+      <div className="h-full">
+        <HeroSection />
+        <Features />
+        <Demo />
+        <Testimonials />
+        <FAQ />
+        <About />
+        <Contact />
+        <Footer />
+      </div>
+    </PageTransition>
   );
 };
 

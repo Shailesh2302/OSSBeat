@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import gsap from "gsap";
 
 const NAV_LINKS = [
   { id: "home", label: "Home" },
@@ -18,10 +19,14 @@ export default function Navbar() {
   const [activeId, setActiveId] = useState<string>("home");
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
+  const logoRef = useRef<HTMLSpanElement>(null);
+  const linksRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 16);
+      const scrolledState = window.scrollY > 16;
+      setScrolled(scrolledState);
 
       const sections = NAV_LINKS.map((link) =>
         document.getElementById(link.id),
@@ -45,6 +50,37 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    if (!navRef.current) return;
+
+    if (scrolled) {
+      gsap.to(navRef.current, {
+        backdropFilter: "saturate(180%) blur(14px)",
+        backgroundColor: "rgba(12, 13, 19, 0.72)",
+        boxShadow: "0 10px 30px -12px rgba(0,0,0,0.35)",
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    } else {
+      gsap.to(navRef.current, {
+        backdropFilter: "none",
+        backgroundColor: "transparent",
+        boxShadow: "0 0 transparent",
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    }
+  }, [scrolled]);
+
+  useEffect(() => {
+    if (!indicatorRef.current) return;
+    gsap.fromTo(
+      indicatorRef.current,
+      { scale: 0.8, opacity: 0.5 },
+      { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }
+    );
+  }, [activeId]);
+
+  useEffect(() => {
     if (!isOpen) return;
 
     const onResize = () => {
@@ -56,6 +92,14 @@ export default function Navbar() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, [isOpen]);
+
+  const handleNavClick = useCallback((id: string) => {
+    setIsOpen(false);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   const linkItems = useMemo(
     () =>
@@ -74,32 +118,24 @@ export default function Navbar() {
                 ? `text-foreground ${bgActive}`
                 : `${baseText} ${hoverText}`
             }`}
-            onClick={() => setIsOpen(false)}
+            onClick={() => handleNavClick(link.id)}
           >
             {link.label}
           </a>
         );
       }),
-    [activeId, scrolled],
+    [activeId, scrolled, handleNavClick],
   );
 
   return (
-    <motion.nav
+    <nav
       ref={navRef}
-      initial={false}
-      animate={{
-        backdropFilter: scrolled ? "saturate(180%) blur(14px)" : "none",
-        backgroundColor: scrolled ? "rgba(12, 13, 19, 0.72)" : "transparent",
-        boxShadow: scrolled
-          ? "0 10px 30px -12px rgba(0,0,0,0.35)"
-          : "0 0 transparent",
-      }}
-      transition={{ type: "spring", stiffness: 260, damping: 28 }}
       className="fixed inset-x-0 top-0 z-50"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <span
+            ref={logoRef}
             className={`text-lg sm:text-xl font-bold tracking-tight transition-colors duration-200 ${
               scrolled ? "text-foreground" : "text-background"
             }`}
@@ -107,13 +143,14 @@ export default function Navbar() {
             OSSBeat
           </span>
           <motion.span
+            ref={indicatorRef}
             className="h-2 w-2 rounded-full bg-primary"
             animate={{ y: [0, -4, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
           />
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div ref={linksRef} className="hidden md:flex items-center gap-8">
           <div className="flex items-center gap-6">
             {NAV_LINKS.map((link) => (
               <a
@@ -128,6 +165,7 @@ export default function Navbar() {
                     ? "text-muted-foreground hover:text-foreground"
                     : "text-background/80 hover:text-background"
                 }`}
+                onClick={() => handleNavClick(link.id)}
               >
                 {link.label}
                 <span
@@ -194,6 +232,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   );
 }

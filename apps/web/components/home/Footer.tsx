@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Github, Twitter, Linkedin } from "lucide-react";
@@ -61,7 +63,7 @@ const Footer = () => {
 
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 OSSBeat. All rights reserved.
+            &copy; 2024 OSSBeat. All rights reserved.
           </p>
         </div>
       </div>

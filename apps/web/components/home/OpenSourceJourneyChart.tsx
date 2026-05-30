@@ -1,14 +1,19 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /* ---------------- CONFIG ---------------- */
 
-const ROWS = 14;            // double height
+const ROWS = 14;
 const TEXT_ROWS = 7;
 const GAP = 3;
 const CELL_MAX = 10;
 
 /* ---------------- LETTER MAP ---------------- */
-/* 7 rows × 5 columns per letter */
 
 const LETTERS: Record<string, number[][]> = {
   S: [
@@ -148,7 +153,7 @@ function buildGrid(text: string) {
 
     const letter = LETTERS[ch];
     if (!letter) {
-      col += 6; // safety fallback
+      col += 6;
       continue;
     }
 
@@ -176,12 +181,37 @@ function buildGrid(text: string) {
 /* ---------------- COMPONENT ---------------- */
 
 export default function OpenSourceJourneyChart() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const { grid, cols } = buildGrid(
     "START YOUR OPEN SOURCE JOURNEY"
   );
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const cells = containerRef.current.querySelectorAll<HTMLDivElement>(".chart-cell");
+    if (!cells.length) return;
+
+    gsap.fromTo(
+      cells,
+      { opacity: 0, scale: 0.5 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        stagger: 0.005,
+        ease: "back.out(1.5)",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 90%",
+          once: true,
+        },
+      }
+    );
+  }, []);
+
   return (
-    <div className="w-full bg-neutral-950 rounded-xl p-1 overflow-hidden">
+    <div ref={containerRef} className="w-full bg-neutral-950 rounded-xl p-1 overflow-hidden">
       <div
         className="grid justify-center"
         style={{
@@ -192,7 +222,7 @@ export default function OpenSourceJourneyChart() {
         {grid.flat().map((cell, i) => (
           <div
             key={i}
-            className={`aspect-square rounded-sm ${
+            className={`chart-cell aspect-square rounded-sm ${
               cell ? "bg-white" : "bg-neutral-900"
             }`}
             style={{ maxWidth: CELL_MAX, maxHeight: CELL_MAX }}

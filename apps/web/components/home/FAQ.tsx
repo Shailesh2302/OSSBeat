@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import gsap from "gsap";
 
 const faqs = [
   {
     question: "How do I get started with OSSBeat?",
     answer:
-      "Click the ‘Get Started’ button and sign in with your GitHub account. Once logged in, you can explore curated repos, issues, and track your contribution progress.",
+      "Click the Get Started button and sign in with your GitHub account. Once logged in, you can explore curated repos, issues, and track your contribution progress.",
   },
   {
     question: "What is the best way to find beginner-friendly issues?",
@@ -41,6 +42,60 @@ const item = {
   visible: { opacity: 1, y: 0 },
 };
 
+function FAQItem({
+  faq,
+  isOpen,
+  onClick,
+}: {
+  faq: (typeof faqs)[0];
+  isOpen: boolean;
+  onClick: () => void;
+}) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+    gsap.to(contentRef.current, {
+      height: isOpen ? answerRef.current?.scrollHeight ?? "auto" : 0,
+      opacity: isOpen ? 1 : 0,
+      duration: 0.35,
+      ease: "power3.inOut",
+    });
+  }, [isOpen]);
+
+  return (
+    <motion.div
+      variants={item}
+      className="group relative rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.65)] backdrop-blur"
+    >
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex w-full items-start justify-between gap-4 text-left"
+      >
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">
+            {faq.question}
+          </h3>
+        </div>
+        <motion.span
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="text-muted-foreground mt-1 shrink-0"
+        >
+          <ChevronDown className="h-5 w-5" />
+        </motion.span>
+      </button>
+      <div ref={contentRef} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
+        <div ref={answerRef} className="pt-4">
+          <p className="text-sm text-muted-foreground">{faq.answer}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -69,46 +124,14 @@ export default function FAQ() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {faqs.map((faq, idx) => {
-            const isOpen = idx === openIndex;
-            return (
-              <motion.div
-                key={faq.question}
-                variants={item}
-                className="group relative rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.65)] backdrop-blur"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="flex w-full items-start justify-between gap-4 text-left"
-                >
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {faq.question}
-                    </h3>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {faq.answer.substring(0, 120)}...
-                    </p>
-                  </div>
-                  <motion.span
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="text-muted-foreground"
-                  >
-                    <ChevronDown className="h-5 w-5" />
-                  </motion.span>
-                </button>
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: isOpen ? 1 : 0, height: isOpen ? "auto" : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="mt-4 text-sm text-muted-foreground overflow-hidden"
-                >
-                  {faq.answer}
-                </motion.div>
-              </motion.div>
-            );
-          })}
+          {faqs.map((faq, idx) => (
+            <FAQItem
+              key={faq.question}
+              faq={faq}
+              isOpen={idx === openIndex}
+              onClick={() => setOpenIndex(idx === openIndex ? null : idx)}
+            />
+          ))}
         </div>
       </div>
     </motion.section>
