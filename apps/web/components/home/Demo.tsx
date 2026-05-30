@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { useScrollReveal } from "@/hooks/useReveal";
 import { LayoutGrid, Terminal, CheckCircle2, Sparkles } from "lucide-react";
 import OpenSourceJourneyChart from "./OpenSourceJourneyChart";
 import AnimatedCounter from "@/components/animations/AnimatedCounter";
@@ -27,28 +27,18 @@ const steps = [
   },
 ];
 
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function Demo() {
+  const { ref: sectionRef, style: sectionStyle } = useScrollReveal();
+
   return (
-    <motion.section
+    <section
       id="demo"
       className="section-padding bg-muted scroll-mt-24"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
+      ref={sectionRef}
+      style={sectionStyle}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>Demo</span>
           </div>
@@ -58,13 +48,12 @@ export default function Demo() {
           <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             OSSBeat combines discovery, issue tracking, and milestones into one dashboard.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-10" />
 
         <div className="grid gap-10 lg:grid-cols-2 items-start">
-          {/* — Dashboard preview card — */}
-          <motion.article variants={item} className="border border-border p-8 bg-card">
+          <article className="border border-border p-8 bg-card">
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h3 className="newspaper-headline text-xl">
@@ -94,10 +83,9 @@ export default function Demo() {
                 ))}
               </div>
             </div>
-          </motion.article>
+          </article>
 
-          {/* — Workflow steps — */}
-          <motion.article variants={item} className="border border-border p-8 bg-card">
+          <article className="border border-border p-8 bg-card">
             <h3 className="newspaper-headline text-xl mb-6">
               How the workflow feels
             </h3>
@@ -119,9 +107,9 @@ export default function Demo() {
                 );
               })}
             </div>
-          </motion.article>
+          </article>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

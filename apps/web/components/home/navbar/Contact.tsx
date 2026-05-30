@@ -1,31 +1,33 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import { useState, FormEvent } from "react";
 import { Mail, MapPin, Github, Twitter, Linkedin } from "lucide-react";
-
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
+import { axiosPublicInstance } from "@/utils/axios-public";
 
 export default function Contact() {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) return;
+    setStatus("loading");
+    try {
+      await axiosPublicInstance.post("/contact/sendMessage", form);
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
-    <motion.section
+    <section
       id="contact"
       className="section-padding bg-muted scroll-mt-24"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>Contact</span>
           </div>
@@ -35,13 +37,13 @@ export default function Contact() {
           <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             Questions, feedback, or feature suggestions? We&apos;d love to hear from you.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-10" />
 
         <div className="grid gap-10 lg:grid-cols-2">
           {/* — Contact info — */}
-          <motion.div variants={item} className="border border-border p-8 bg-card">
+          <div className="border border-border p-8 bg-card">
             <h3 className="newspaper-headline text-xl mb-6">Reach us</h3>
             <div className="space-y-6">
               {[
@@ -79,55 +81,81 @@ export default function Contact() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* — Message form — */}
-          <motion.div variants={item} className="border border-border p-8 bg-card">
+          <div className="border border-border p-8 bg-card">
             <h3 className="newspaper-headline text-xl mb-6">Send a message</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="newspaper-byline text-[0.625rem]" htmlFor="name">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                  placeholder="Your name"
-                />
+            {status === "success" ? (
+              <div className="border border-border p-6 text-center">
+                <p className="text-sm text-foreground font-semibold">
+                  ✓ Message sent! We&apos;ll get back to you soon.
+                </p>
               </div>
-              <div>
-                <label className="newspaper-byline text-[0.625rem]" htmlFor="email">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                  placeholder="you@example.com"
-                />
-              </div>
-              <div>
-                <label className="newspaper-byline text-[0.625rem]" htmlFor="message">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  className="mt-1 w-full resize-none rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                  placeholder="How can we help?"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full rounded-none bg-foreground px-6 py-3 text-sm font-semibold text-background hover:bg-foreground/90 transition"
-              >
-                Send message
-              </button>
-            </form>
-          </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="newspaper-byline text-[0.625rem]" htmlFor="name">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    placeholder="Your name"
+                    required
+                    disabled={status === "loading"}
+                  />
+                </div>
+                <div>
+                  <label className="newspaper-byline text-[0.625rem]" htmlFor="email">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    placeholder="you@example.com"
+                    required
+                    disabled={status === "loading"}
+                  />
+                </div>
+                <div>
+                  <label className="newspaper-byline text-[0.625rem]" htmlFor="message">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    rows={4}
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    className="mt-1 w-full resize-none rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    placeholder="How can we help?"
+                    required
+                    disabled={status === "loading"}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="w-full rounded-none bg-foreground px-6 py-3 text-sm font-semibold text-background hover:bg-foreground/90 transition disabled:opacity-50"
+                >
+                  {status === "loading" ? "Sending..." : "Send message"}
+                </button>
+                {status === "error" && (
+                  <p className="text-sm text-red-600 text-center">
+                    Failed to send. Please try again.
+                  </p>
+                )}
+              </form>
+            )}
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

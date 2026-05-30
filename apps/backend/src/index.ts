@@ -8,6 +8,9 @@ import userRouter from "./modules/user/userRoutes";
 import githubWebhookRoute from "./modules/hook/githubWebhookRoutes";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import featureRoute from "./modules/features/featureRoutes";
+import statsRoute from "./modules/stats/statsRoutes";
+import newsletterRoute from "./modules/newsletter/newsletterRoutes";
+import contactRoute from "./modules/contact/contactRoutes";
 
 // Environment validation
 const requiredEnvVars = [
@@ -67,6 +70,9 @@ app.use("/repo", repoRouter);
 app.use("/user", userRouter);
 app.use("/github", githubWebhookRoute);
 app.use("/feature", featureRoute);
+app.use("/stats", statsRoute);
+app.use("/newsletter", newsletterRoute);
+app.use("/contact", contactRoute);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });

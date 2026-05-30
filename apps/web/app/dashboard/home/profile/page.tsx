@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { axiosAuthInstance } from "@/utils/axios-auth";
+import { axiosPublicInstance } from "@/utils/axios-public";
 import type { UserProfile } from "@/types/userTypes";
-import { ExternalLink, Eye, EyeOff } from "lucide-react";
+import { ExternalLink, Eye, EyeOff, GithubIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -12,7 +13,20 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
+  const [form, setForm] = useState({ email: "", password: "", username: "", display_name: "" });
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  const router = useRouter();
+
   useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     async function load() {
       setLoading(true);
       setError(null);
@@ -21,13 +35,51 @@ export default function ProfilePage() {
         setProfile(res.data);
       } catch (err) {
         console.error("Failed to load profile", err);
-        setError("Unable to load profile. Make sure you are signed in.");
+        setError("Unable to load profile. Sign in again.");
       } finally {
         setLoading(false);
       }
     }
     load();
   }, []);
+
+  async function handleAuthSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setAuthError(null);
+
+    if (authMode === "signup" && !form.username.trim()) {
+      setAuthError("Username is required");
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      const endpoint = authMode === "signup" ? "/user/signup" : "/user/login";
+      const body = authMode === "signup"
+        ? { email: form.email, password: form.password, username: form.username, display_name: form.display_name || undefined }
+        : { email: form.email, password: form.password };
+
+      const res = await axiosPublicInstance.post(endpoint, body);
+      localStorage.setItem("access_token", res.data.accessToken);
+      setProfile(res.data.user);
+      router.refresh();
+    } catch (err: any) {
+      const msg = err.response?.data?.error;
+      if (typeof msg === "object" && msg !== null) {
+        setAuthError(Object.values(msg).flat().join(", "));
+      } else {
+        setAuthError(msg || "Something went wrong");
+      }
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
+  async function handleLogout() {
+    localStorage.removeItem("access_token");
+    setProfile(null);
+    router.refresh();
+  }
 
   async function toggleProfileVisibility() {
     if (!profile) return;
@@ -67,6 +119,139 @@ export default function ProfilePage() {
     );
   }
 
+  if (!profile) {
+    return (
+      <div className="bg-background text-foreground">
+        <div className="content-max px-6 py-10">
+          <div
+          style={{ animation: "pageFadeIn 0.4s ease-out" }}
+          className="max-w-lg mx-auto"
+          >
+            <div className="flex items-center gap-4 mb-2">
+              <span className="w-1 h-10 bg-foreground" />
+              <h1 className="newspaper-headline text-3xl sm:text-4xl">
+                {authMode === "signup" ? "Sign Up" : "Sign In"}
+              </h1>
+            </div>
+            <p className="text-sm text-muted-foreground pl-5 mb-8">
+              {authMode === "signup"
+                ? "Create an account to get started."
+                : "Sign in to your account."}
+            </p>
+
+            <div className="border border-border bg-card p-8">
+              <form onSubmit={handleAuthSubmit} className="space-y-4">
+                {authMode === "signup" && (
+                  <>
+                    <div>
+                      <label className="newspaper-byline text-[0.625rem]" htmlFor="su-username">
+                        Username
+                      </label>
+                      <input
+                        id="su-username"
+                        type="text"
+                        value={form.username}
+                        onChange={(e) => setForm({ ...form, username: e.target.value })}
+                        className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                        placeholder="yourusername"
+                        required
+                        disabled={authLoading}
+                      />
+                    </div>
+                    <div>
+                      <label className="newspaper-byline text-[0.625rem]" htmlFor="su-display">
+                        Display Name (optional)
+                      </label>
+                      <input
+                        id="su-display"
+                        type="text"
+                        value={form.display_name}
+                        onChange={(e) => setForm({ ...form, display_name: e.target.value })}
+                        className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                        placeholder="Your Name"
+                        disabled={authLoading}
+                      />
+                    </div>
+                  </>
+                )}
+                <div>
+                  <label className="newspaper-byline text-[0.625rem]" htmlFor="auth-email">
+                    Email
+                  </label>
+                  <input
+                    id="auth-email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    placeholder="you@example.com"
+                    required
+                    disabled={authLoading}
+                  />
+                </div>
+                <div>
+                  <label className="newspaper-byline text-[0.625rem]" htmlFor="auth-password">
+                    Password
+                  </label>
+                  <input
+                    id="auth-password"
+                    type="password"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    placeholder={authMode === "signup" ? "At least 8 characters" : "Your password"}
+                    required
+                    minLength={authMode === "signup" ? 8 : 1}
+                    disabled={authLoading}
+                  />
+                </div>
+
+                {authError && (
+                  <p className="text-sm text-red-600">{authError}</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full rounded-none bg-foreground px-6 py-3 text-sm font-semibold text-background hover:bg-foreground/90 transition disabled:opacity-50"
+                >
+                  {authLoading
+                    ? "Please wait..."
+                    : authMode === "signup"
+                      ? "Create Account"
+                      : "Sign In"}
+                </button>
+              </form>
+
+              <hr className="newspaper-rule-thin my-6" />
+
+              <p className="text-xs text-center text-muted-foreground">
+                {authMode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode(authMode === "signup" ? "login" : "signup"); setAuthError(null); }}
+                  className="underline text-foreground hover:no-underline"
+                >
+                  {authMode === "signup" ? "Sign in" : "Sign up"}
+                </button>
+              </p>
+
+              <hr className="newspaper-rule-thin my-6" />
+
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_URL}/auth/github`}
+                className="flex items-center justify-center gap-2 w-full rounded-none border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-card transition"
+              >
+                <GithubIcon className="h-4 w-4" />
+                Continue with GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="bg-background text-foreground">
@@ -79,8 +264,6 @@ export default function ProfilePage() {
     );
   }
 
-  if (!profile) return null;
-
   const initials = (profile.display_name || profile.username)
     .split(" ")
     .map((p: string) => p[0])
@@ -91,29 +274,32 @@ export default function ProfilePage() {
   return (
     <div className="bg-background text-foreground">
       <div className="content-max px-6 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+        <div style={{ animation: "pageFadeIn 0.4s ease-out" }}>
           {/* — Header — */}
-          <div className="flex items-center gap-4 mb-2">
-            <span className="w-1 h-10 bg-foreground" />
-            <h1 className="newspaper-headline text-3xl sm:text-4xl">Profile</h1>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-4">
+              <span className="w-1 h-10 bg-foreground" />
+              <h1 className="newspaper-headline text-3xl sm:text-4xl">Profile</h1>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-xs text-muted-foreground underline hover:text-foreground"
+            >
+              Sign out
+            </button>
           </div>
           <p className="text-sm text-muted-foreground pl-5">
             Your account information and preferences.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin my-8" />
 
         <div className="grid gap-10 lg:grid-cols-3">
           {/* — Profile card — */}
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+          <div
+            style={{ animation: "pageFadeIn 0.4s ease-out 0.1s both" }}
             className="lg:col-span-2 space-y-6"
           >
             {/* Identity */}
@@ -184,13 +370,11 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* — Privacy sidebar — */}
-          <motion.div
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
+          <div
+            style={{ animation: "pageFadeIn 0.4s ease-out 0.2s both" }}
             className="space-y-6"
           >
             <div className="border border-border bg-card p-8">
@@ -263,7 +447,7 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

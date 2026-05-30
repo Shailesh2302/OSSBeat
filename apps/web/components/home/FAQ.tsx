@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 
 const faqs = [
@@ -32,30 +31,16 @@ const faqs = [
   },
 ];
 
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <motion.section
+    <section
       id="faq"
       className="section-padding bg-muted scroll-mt-24"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>Q &amp; A</span>
           </div>
@@ -65,7 +50,7 @@ export default function FAQ() {
           <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             Need help? Browse through the most common questions about OSSBeat.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-10" />
 
@@ -73,9 +58,8 @@ export default function FAQ() {
           {faqs.map((faq, idx) => {
             const isOpen = idx === openIndex;
             return (
-              <motion.div
+              <div
                 key={faq.question}
-                variants={item}
                 className="border border-border bg-card"
               >
                 <button
@@ -86,38 +70,37 @@ export default function FAQ() {
                   <h3 className="font-semibold text-foreground pr-4">
                     {faq.question}
                   </h3>
-                  <motion.span
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  <span
+                    style={{
+                      transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     className="text-muted-foreground shrink-0"
                   >
                     <Plus className="h-4 w-4" />
-                  </motion.span>
+                  </span>
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      key="answer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-6 pb-6">
-                        <hr className="newspaper-rule-thin mb-4" />
-                        <p className="newspaper-body text-muted-foreground">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                <div
+                  style={{
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
+                    transition: "grid-template-rows 0.3s ease",
+                  }}
+                  className="grid"
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-6 pb-6">
+                      <hr className="newspaper-rule-thin mb-4" />
+                      <p className="newspaper-body text-muted-foreground">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

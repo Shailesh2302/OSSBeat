@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { useInView, animate } from "framer-motion";
+import { useRef } from "react";
+import { useInView, useAnimateValue } from "@/hooks/useReveal";
 
 interface AnimatedCounterProps {
   from?: number;
@@ -19,24 +19,12 @@ export default function AnimatedCounter({
   className = "",
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [displayVal, setDisplayVal] = useState(from);
-
-  useEffect(() => {
-    if (!isInView) return;
-
-    const controls = animate(from, to, {
-      duration,
-      ease: "easeOut",
-      onUpdate: (latest) => setDisplayVal(Math.round(latest)),
-    });
-
-    return () => controls.stop();
-  }, [isInView, from, to, duration]);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const value = useAnimateValue(from, to, inView, duration * 1000);
 
   return (
     <span ref={ref} className={className}>
-      {displayVal.toLocaleString()}{suffix}
+      {value.toLocaleString()}{suffix}
     </span>
   );
 }

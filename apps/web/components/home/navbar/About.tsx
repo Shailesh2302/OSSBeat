@@ -1,44 +1,28 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Github } from "lucide-react";
-
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.14 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const About = () => {
   return (
-    <motion.section
+    <section
       id="about"
       className="section-padding bg-background scroll-mt-24"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>About</span>
           </div>
           <h2 className="newspaper-headline text-3xl sm:text-4xl md:text-5xl text-center">
             Built for contributors, by contributors
           </h2>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-10" />
 
         <div className="grid gap-12 lg:grid-cols-5">
-          {/* — Main editorial — */}
-          <motion.div variants={item} className="lg:col-span-3">
+          <div className="lg:col-span-3">
             <div className="newspaper-body newspaper-dropcap text-foreground/90">
               <p>
                 OSSBeat is a lightweight platform that helps you discover open
@@ -71,13 +55,9 @@ const About = () => {
                 See a preview
               </a>
             </div>
-          </motion.div>
+          </div>
 
-          {/* — Sidebar: what you get — */}
-          <motion.div
-            variants={item}
-            className="lg:col-span-2 border border-border p-8 bg-card"
-          >
+          <div className="lg:col-span-2 border border-border p-8 bg-card">
             <h3 className="newspaper-headline text-xl mb-6">
               What you&apos;ll get
             </h3>
@@ -94,10 +74,10 @@ const About = () => {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 

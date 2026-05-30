@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { axiosPublicInstance } from "@/utils/axios-public";
 import { GitHubRepo } from "@/types/featureTypes";
 import { RepoSkeleton } from "@/components/skeleton/RepoSkeleton";
@@ -34,10 +33,8 @@ export default function GsocPage() {
   return (
     <div className="bg-background text-foreground">
       <div className="content-max px-6 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+        <div
+          style={{ animation: "pageFadeIn 0.4s ease-out" }}
           className="mb-10"
         >
           <div className="flex items-center gap-4 mb-2">
@@ -51,20 +48,16 @@ export default function GsocPage() {
             Find projects that are looking for contributors and start your open
             source journey!
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-8" />
 
         {loading && <RepoSkeleton count={9} />}
 
         {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="border border-border bg-card p-6 text-center text-muted-foreground"
-          >
+          <div className="border border-border bg-card p-6 text-center text-muted-foreground">
             {error}
-          </motion.div>
+          </div>
         )}
 
         {!loading && !error && repos.length === 0 && (
@@ -74,27 +67,11 @@ export default function GsocPage() {
         )}
 
         {!loading && !error && repos.length > 0 && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.05 } },
-            }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {repos.map((repo) => (
-              <motion.div
-                key={repo.id}
-                variants={{
-                  hidden: { opacity: 0, y: 12 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-              >
-                <RepoCard repo={repo} />
-              </motion.div>
+              <RepoCard key={repo.id} repo={repo} />
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

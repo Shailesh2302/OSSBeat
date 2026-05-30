@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
@@ -92,15 +91,15 @@ export default function Navbar() {
 
   return (
     <>
-      {/* — Full masthead — */}
-      <motion.header
-        animate={{
+      <header
+        style={{
           opacity: scrolled ? 0 : 1,
           height: scrolled ? 0 : "auto",
           pointerEvents: scrolled ? "none" : "auto",
+          overflow: "hidden",
+          transition: "opacity 0.3s ease-in-out, height 0.3s ease-in-out",
         }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="fixed inset-x-0 top-0 z-50 overflow-hidden bg-background"
+        className="fixed inset-x-0 top-0 z-50 bg-background"
       >
         <div className="content-max section-padding !py-4">
           <div className="flex items-center justify-between text-[0.625rem] uppercase tracking-widest text-muted-foreground">
@@ -118,16 +117,15 @@ export default function Navbar() {
           </nav>
           <hr className="newspaper-rule-thin mt-2" />
         </div>
-      </motion.header>
+      </header>
 
-      {/* — Compact scrolled bar — */}
-      <motion.nav
-        animate={{
+      <nav
+        style={{
           opacity: scrolled ? 1 : 0,
-          y: scrolled ? 0 : -80,
+          transform: scrolled ? "translateY(0)" : "translateY(-80px)",
           pointerEvents: scrolled ? "auto" : "none",
+          transition: "opacity 0.3s ease-in-out, transform 0.3s ease-in-out",
         }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
         className="fixed inset-x-0 top-0 z-50 bg-background border-b border-border"
       >
         <div className="content-max flex items-center justify-between px-4 h-12">
@@ -163,46 +161,37 @@ export default function Navbar() {
             {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
-      </motion.nav>
+      </nav>
 
-      {/* — Mobile drawer — */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 md:hidden"
+      {isOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <div
+            className="absolute inset-0 bg-background/90 backdrop-blur"
+            onClick={() => setIsOpen(false)}
+          />
+          <div
+            style={{
+              transform: "translateX(0)",
+              transition: "transform 0.3s ease",
+            }}
+            className="relative flex h-full w-64 flex-col border-r border-border bg-card p-6"
           >
-            <div
-              className="absolute inset-0 bg-background/90 backdrop-blur"
-              onClick={() => setIsOpen(false)}
-            />
-            <motion.div
-              initial={{ x: -260 }}
-              animate={{ x: 0 }}
-              exit={{ x: -260 }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
-              className="relative flex h-full w-64 flex-col border-r border-border bg-card p-6"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <span className="newspaper-headline text-lg">OSSBeat</span>
-                <button
-                  type="button"
-                  aria-label="Close menu"
-                  className="p-1 text-foreground"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              <hr className="newspaper-rule-thin mb-4" />
-              <nav className="flex flex-col gap-1">{linkItems}</nav>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="flex items-center justify-between mb-6">
+              <span className="newspaper-headline text-lg">OSSBeat</span>
+              <button
+                type="button"
+                aria-label="Close menu"
+                className="p-1 text-foreground"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <hr className="newspaper-rule-thin mb-4" />
+            <nav className="flex flex-col gap-1">{linkItems}</nav>
+          </div>
+        </div>
+      )}
     </>
   );
 }

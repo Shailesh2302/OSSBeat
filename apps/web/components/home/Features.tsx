@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { useScrollReveal } from "@/hooks/useReveal";
 import { Search, Code, BarChart3, Sparkles, GitPullRequest, BookOpen } from "lucide-react";
 
 const features = [
@@ -43,7 +43,10 @@ const features = [
   },
 ];
 
-const secondaryContent = [
+const secondaryContent: (
+  | { icon: typeof GitPullRequest; title: string; body: string; steps: string[]; bullets?: never }
+  | { icon: typeof BookOpen; title: string; body: string; bullets: string[]; steps?: never }
+)[] = [
   {
     icon: GitPullRequest,
     title: "From zero to first PR in under an hour",
@@ -68,28 +71,18 @@ const secondaryContent = [
   },
 ];
 
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function Features() {
+  const { ref, style } = useScrollReveal();
+
   return (
-    <motion.section
+    <section
       id="features"
       className="section-padding bg-background scroll-mt-24"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
-      variants={container}
+      ref={ref}
+      style={style}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>Features</span>
           </div>
@@ -99,18 +92,16 @@ export default function Features() {
           <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             OSSBeat combines repository discovery, issue tracking, and contribution insights into a single workflow — so you can spend less time searching and more time contributing.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-10" />
 
-        {/* — Feature cards — */}
         <div className="grid gap-8 md:grid-cols-2">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <motion.article
+              <article
                 key={feature.title}
-                variants={item}
                 className="border border-border p-8 bg-card"
               >
                 <div className="flex items-center gap-4 mb-5">
@@ -124,19 +115,18 @@ export default function Features() {
                     <p key={i}>{para}</p>
                   ))}
                 </div>
-              </motion.article>
+              </article>
             );
           })}
         </div>
 
-        {/* — Secondary row — */}
         <hr className="newspaper-rule-double my-14" />
 
         <div className="grid gap-10 lg:grid-cols-2">
           {secondaryContent.map((section) => {
             const Icon = section.icon;
             return (
-              <motion.article key={section.title} variants={item} className="border border-border p-8 bg-card">
+              <article key={section.title} className="border border-border p-8 bg-card">
                 <div className="flex items-center gap-4 mb-5">
                   <span className="flex h-12 w-12 items-center justify-center bg-foreground text-background shrink-0">
                     <Icon className="h-6 w-6" />
@@ -146,30 +136,30 @@ export default function Features() {
                 <p className="newspaper-body text-muted-foreground text-sm mb-6">
                   {section.body}
                 </p>
-                {"steps" in section ? (
+                {"steps" in section && section.steps ? (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {section.steps.map((step, i) => (
+                    {section.steps.map((step: string, i: number) => (
                       <div key={step} className="border border-border p-4 bg-background">
                         <p className="newspaper-byline text-[0.5rem] mb-1">Step {i + 1}</p>
                         <p className="text-sm font-semibold">{step}</p>
                       </div>
                     ))}
                   </div>
-                ) : (
+                ) : "bullets" in section && section.bullets ? (
                   <ul className="space-y-3">
-                    {section.bullets.map((text) => (
+                    {section.bullets.map((text: string) => (
                       <li key={text} className="flex items-start gap-3 newspaper-body text-muted-foreground text-sm">
                         <span className="mt-1.5 inline-flex h-1.5 w-1.5 bg-foreground shrink-0" />
                         {text}
                       </li>
                     ))}
                   </ul>
-                )}
-              </motion.article>
+                ) : null}
+              </article>
             );
           })}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

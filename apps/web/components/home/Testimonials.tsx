@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -24,28 +23,14 @@ const testimonials = [
   },
 ];
 
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.14 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function Testimonials() {
   return (
-    <motion.section
+    <section
       id="testimonials"
       className="section-padding bg-background scroll-mt-24"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>Opinion</span>
           </div>
@@ -55,15 +40,17 @@ export default function Testimonials() {
           <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             Real stories from developers who used OSSBeat to kickstart their open source journey.
           </p>
-        </motion.div>
+        </div>
 
+        <p className="text-[0.625rem] uppercase tracking-widest text-center text-muted-foreground mb-4">
+          The following are illustrative profiles based on typical OSSBeat user experiences.
+        </p>
         <hr className="newspaper-rule-thin mb-10" />
 
         <div className="grid gap-8 md:grid-cols-3">
           {testimonials.map((t) => (
-            <motion.article
+            <article
               key={t.name}
-              variants={item}
               className="border border-border p-8 bg-card flex flex-col"
             >
               <div className="flex items-center gap-4 mb-6">
@@ -81,10 +68,10 @@ export default function Testimonials() {
               <div className="newspaper-pullquote !border-t-0 !pt-0 !mt-0 text-left text-base flex-1">
                 &ldquo;{t.quote}&rdquo;
               </div>
-            </motion.article>
+            </article>
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

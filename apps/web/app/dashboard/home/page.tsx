@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import { Repo } from "@/types/repoTypes";
 import { axiosPublicInstance } from "@/utils/axios-public";
 import { RepoSkeleton } from "@/components/skeleton/RepoSkeleton";
@@ -248,96 +247,58 @@ export default function DiscoverPage() {
         <hr className="newspaper-rule-thin mb-8" />
 
         {/* — Repo grid — */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${filters.language}-${filters.popularity}-${search}-${selectedTopics.join(",")}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
-            {filteredRepos.map((r, idx) => (
-              <motion.a
-                key={r.github_repo_id}
-                href={r.html_url}
-                target="_blank"
-                rel="noreferrer"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.02, duration: 0.25 }}
-                className="block border border-border bg-card hover:bg-muted transition-colors"
-              >
-                <div className="p-5 flex flex-col h-full">
-                  <div className="flex gap-3 items-start">
-                    <Image
-                      src={r.owner_avatar_url}
-                      alt={r.owner_login}
-                      width={40}
-                      height={40}
-                      className="object-cover"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-semibold truncate">
-                        {r.full_name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {r.owner_login}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="mt-3 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                    {r.description ?? "No description provided."}
-                  </p>
-
-                  <div className="mt-auto pt-4 flex items-center justify-between text-xs border-t border-border">
-                    <div className="flex gap-3 text-muted-foreground">
-                      <span>★ {r.stars_count.toLocaleString()}</span>
-                      <span>⑂ {r.forks_count.toLocaleString()}</span>
-                    </div>
-                    {r.primary_language && (
-                      <span className="text-[0.625rem] uppercase tracking-wider font-semibold">
-                        {r.primary_language}
-                      </span>
-                    )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredRepos.map((r) => (
+            <a
+              key={r.github_repo_id}
+              href={r.html_url}
+              target="_blank"
+              rel="noreferrer"
+              className="block border border-border bg-card hover:bg-muted transition-colors"
+            >
+              <div className="p-5 flex flex-col h-full">
+                <div className="flex gap-3 items-start">
+                  <Image
+                    src={r.owner_avatar_url}
+                    alt={r.owner_login}
+                    width={40}
+                    height={40}
+                    className="object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-semibold truncate">
+                      {r.full_name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {r.owner_login}
+                    </p>
                   </div>
                 </div>
-              </motion.a>
-            ))}
-          </motion.div>
-        </AnimatePresence>
+
+                <p className="mt-3 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  {r.description ?? "No description provided."}
+                </p>
+
+                <div className="mt-auto pt-4 flex items-center justify-between text-xs border-t border-border">
+                  <div className="flex gap-3 text-muted-foreground">
+                    <span>★ {r.stars_count.toLocaleString()}</span>
+                    <span>⑂ {r.forks_count.toLocaleString()}</span>
+                  </div>
+                  {r.primary_language && (
+                    <span className="text-[0.625rem] uppercase tracking-wider font-semibold">
+                      {r.primary_language}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
 
         {/* — Loading skeleton — */}
         {loading && hasNextPage && (
           <div className="mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-                <div
-                  key={i}
-                  className="border border-border bg-card p-5 animate-pulse"
-                >
-                  <div className="flex gap-3">
-                    <div className="w-10 h-10 bg-muted" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-3 bg-muted w-3/4" />
-                      <div className="h-2.5 bg-muted w-1/2" />
-                    </div>
-                  </div>
-                  <div className="mt-3 space-y-2">
-                    <div className="h-2.5 bg-muted w-full" />
-                    <div className="h-2.5 bg-muted w-5/6" />
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
-                    <div className="flex gap-3">
-                      <div className="h-2.5 bg-muted w-12" />
-                      <div className="h-2.5 bg-muted w-12" />
-                    </div>
-                    <div className="h-6 bg-muted w-16" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <RepoSkeleton count={SKELETON_COUNT} />
           </div>
         )}
 

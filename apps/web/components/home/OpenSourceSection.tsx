@@ -1,24 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useScrollReveal } from "@/hooks/useReveal";
 import { Github, GitFork, Star, Users } from "lucide-react";
 
-const motionItem = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function OpenSourceSection() {
+  const { ref, style } = useScrollReveal();
+
   return (
-    <motion.section
+    <section
       className="section-padding bg-background"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
+      ref={ref}
+      style={style}
     >
       <div className="content-max">
-        <motion.div variants={motionItem} className="max-w-3xl mx-auto text-center">
+        <div className="max-w-3xl mx-auto text-center">
           <div className="newspaper-section-title mb-6">
             <span>Community</span>
           </div>
@@ -31,7 +26,7 @@ export default function OpenSourceSection() {
             contribution. Every feature, fix, and improvement is developed in
             public on GitHub.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin my-10" />
 
@@ -55,9 +50,8 @@ export default function OpenSourceSection() {
           ].map((card) => {
             const Icon = card.icon;
             return (
-              <motion.div
+              <div
                 key={card.label}
-                variants={motionItem}
                 className="text-center border border-border p-8 bg-card"
               >
                 <span className="flex h-12 w-12 items-center justify-center bg-foreground text-background mx-auto mb-4">
@@ -67,12 +61,12 @@ export default function OpenSourceSection() {
                 <p className="newspaper-body text-xs text-muted-foreground">
                   {card.desc}
                 </p>
-              </motion.div>
+              </div>
             );
           })}
         </div>
 
-        <motion.div variants={motionItem} className="text-center mt-10">
+        <div className="text-center mt-10">
           <a
             href="https://github.com/Shailesh2302/OSSBeat"
             target="_blank"
@@ -82,8 +76,8 @@ export default function OpenSourceSection() {
             <Github className="h-4 w-4" />
             View on GitHub
           </a>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

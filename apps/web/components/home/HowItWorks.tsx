@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useScrollReveal } from "@/hooks/useReveal";
 import { Github, Search, GitPullRequest, BarChart3, ArrowRight } from "lucide-react";
 
 const steps = [
@@ -50,27 +50,17 @@ const steps = [
   },
 ];
 
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function HowItWorks() {
+  const { ref, style } = useScrollReveal();
+
   return (
-    <motion.section
+    <section
       className="section-padding bg-muted"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
-      variants={container}
+      ref={ref}
+      style={style}
     >
       <div className="content-max">
-        <motion.div variants={item} className="mb-12">
+        <div className="mb-12">
           <div className="newspaper-section-title mb-6">
             <span>How It Works</span>
           </div>
@@ -80,24 +70,21 @@ export default function HowItWorks() {
           <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             OSSBeat streamlines the open source contribution process so you can focus on what matters — writing great code and building community.
           </p>
-        </motion.div>
+        </div>
 
         <hr className="newspaper-rule-thin mb-10" />
 
         <div className="relative">
-          {/* — Vertical connecting line — */}
           <div className="absolute left-[1.375rem] top-0 bottom-0 w-px bg-border hidden md:block" />
 
           <div className="space-y-10">
             {steps.map((step, idx) => {
               const Icon = step.icon;
               return (
-                <motion.div
+                <div
                   key={step.number}
-                  variants={item}
                   className="relative md:flex gap-8 items-start"
                 >
-                  {/* — Number + icon — */}
                   <div className="flex md:flex-col items-center gap-4 md:w-20 shrink-0">
                     <span className="flex h-11 w-11 items-center justify-center bg-foreground text-background relative z-10">
                       <Icon className="h-5 w-5" />
@@ -107,7 +94,6 @@ export default function HowItWorks() {
                     </span>
                   </div>
 
-                  {/* — Content — */}
                   <div className="flex-1 border border-border bg-card p-8 md:ml-0 ml-16">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="newspaper-headline text-xl">{step.title}</h3>
@@ -129,12 +115,12 @@ export default function HowItWorks() {
                       ))}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

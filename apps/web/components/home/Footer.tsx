@@ -1,6 +1,3 @@
-"use client";
-
-import React from "react";
 import Link from "next/link";
 import { Github, Twitter, Linkedin } from "lucide-react";
 
@@ -69,8 +66,8 @@ const Footer = () => {
               Colophon
             </p>
             <p className="text-sm text-background/70 leading-relaxed">
-              OSSBeat is an open source project. Built with Next.js, Tailwind
-              CSS, and framer-motion. Set in Geist and Playfair Display.
+              OSSBeat is an open source project. Built with Next.js and Tailwind
+              CSS. Set in Geist and Playfair Display.
             </p>
           </div>
         </div>
