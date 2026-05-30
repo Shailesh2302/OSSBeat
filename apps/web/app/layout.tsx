@@ -3,14 +3,14 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { shareTech } from "./fonts";
+import { playfair } from "./fonts";
 
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title:
-    "ossbeat - Play Beat With OSS | Find Your Likable Project And Contribute",
-  description: "Find your oss to contribute!!!",
+    "OSSBeat — The Open Source Daily",
+  description: "Discover suitable OSS repositories, build strong fundamentals, get expert mentorship for GSoC, and make meaningful contributions.",
   openGraph: {
     images: [
       {
@@ -29,15 +29,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <body className={`${geist.className} ${shareTech.variable}`}>
+      <body className={`${geist.className} ${playfair.variable}`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <main className="min-h-screen w-full bg-background">
-            <div className="mx-auto md:max-w-8xl">{children}</div>
+            {children}
           </main>
         </ThemeProvider>
       </body>

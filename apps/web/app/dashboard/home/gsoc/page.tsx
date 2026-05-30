@@ -32,35 +32,45 @@ export default function GsocPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white">
-      <div className="relative max-w-7xl mx-auto px-6 py-12">
+    <div className="bg-background text-foreground">
+      <div className="content-max px-6 py-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
           className="mb-10"
         >
-          <h1 className="text-4xl font-bold">GSoC Repositories</h1>
-          <p className="mt-2 text-neutral-400 max-w-2xl">
-            Browse repositories participating in Google Summer of Code (GSoC). 
-            Find projects that are looking for contributors and start your open source journey!
+          <div className="flex items-center gap-4 mb-2">
+            <span className="w-1 h-10 bg-foreground" />
+            <h1 className="newspaper-headline text-3xl sm:text-4xl">
+              GSoC Repositories
+            </h1>
+          </div>
+          <p className="text-sm text-muted-foreground pl-5 max-w-2xl">
+            Browse repositories participating in Google Summer of Code (GSoC).
+            Find projects that are looking for contributors and start your open
+            source journey!
           </p>
         </motion.div>
+
+        <hr className="newspaper-rule-thin mb-8" />
 
         {loading && <RepoSkeleton count={9} />}
 
         {error && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center text-red-200 bg-red-500/10 border border-red-500/20 p-6 rounded-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="border border-border bg-card p-6 text-center text-muted-foreground"
           >
             {error}
           </motion.div>
         )}
 
         {!loading && !error && repos.length === 0 && (
-          <div className="text-center text-neutral-300">No GSoC repositories found.</div>
+          <div className="text-center text-muted-foreground py-12">
+            No GSoC repositories found.
+          </div>
         )}
 
         {!loading && !error && repos.length > 0 && (
@@ -71,10 +81,18 @@ export default function GsocPage() {
               hidden: {},
               visible: { transition: { staggerChildren: 0.05 } },
             }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            {repos.map((repo, idx) => (
-              <RepoCard key={repo.id} repo={repo} index={idx} />
+            {repos.map((repo) => (
+              <motion.div
+                key={repo.id}
+                variants={{
+                  hidden: { opacity: 0, y: 12 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                <RepoCard repo={repo} />
+              </motion.div>
             ))}
           </motion.div>
         )}

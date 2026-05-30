@@ -2,20 +2,15 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Twitter, Github, Linkedin } from "lucide-react";
-import ScrollReveal from "@/components/animations/ScrollReveal";
+import { Mail, MapPin, Github, Twitter, Linkedin } from "lucide-react";
 
 const container = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.12 } },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 16 },
   visible: { opacity: 1, y: 0 },
 };
 
@@ -23,128 +18,115 @@ export default function Contact() {
   return (
     <motion.section
       id="contact"
-      className="relative py-20 bg-background scroll-mt-24"
+      className="section-padding bg-muted scroll-mt-24"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.25 }}
+      viewport={{ once: true, amount: 0.2 }}
       variants={container}
     >
-      <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary/10 blur-2xl" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div className="text-center mb-12" variants={item}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
+      <div className="content-max">
+        <motion.div variants={item} className="mb-12">
+          <div className="newspaper-section-title mb-6">
+            <span>Contact</span>
+          </div>
+          <h2 className="newspaper-headline text-3xl sm:text-4xl md:text-5xl text-center">
             Get in touch
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="newspaper-subhead text-center text-base mt-3 max-w-2xl mx-auto">
             Questions, feedback, or feature suggestions? We&apos;d love to hear from you.
           </p>
         </motion.div>
 
-        <ScrollReveal stagger={0.1}>
-          <div className="grid gap-12 md:grid-cols-2">
-            <motion.div
-              className="rounded-3xl border border-border bg-card p-10 shadow-sm"
-              variants={item}
-              whileHover={{ y: -4 }}
-            >
-              <h3 className="text-xl font-semibold text-foreground mb-4">Reach us</h3>
-              <ul className="space-y-4 text-muted-foreground">
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Mail className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Email</p>
-                    <p className="text-sm">hello@ossbeat.dev</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <MapPin className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Location</p>
-                    <p className="text-sm">Remote &mdash; Worldwide</p>
-                  </div>
-                </li>
-              </ul>
+        <hr className="newspaper-rule-thin mb-10" />
 
-              <div className="mt-8">
-                <h4 className="text-sm font-semibold text-foreground mb-3">Stay connected</h4>
-                <div className="flex items-center gap-4">
+        <div className="grid gap-10 lg:grid-cols-2">
+          {/* — Contact info — */}
+          <motion.div variants={item} className="border border-border p-8 bg-card">
+            <h3 className="newspaper-headline text-xl mb-6">Reach us</h3>
+            <div className="space-y-6">
+              {[
+                { icon: Mail, label: "Email", value: "hello@ossbeat.dev" },
+                { icon: MapPin, label: "Location", value: "Remote — Worldwide" },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.label} className="flex items-start gap-4">
+                    <span className="flex h-10 w-10 items-center justify-center bg-foreground text-background shrink-0">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="newspaper-byline text-[0.625rem]">{item.label}</p>
+                      <p className="text-sm text-muted-foreground">{item.value}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <hr className="newspaper-rule-thin my-6" />
+
+            <div>
+              <p className="newspaper-byline text-[0.625rem] mb-3">Stay connected</p>
+              <div className="flex gap-4">
+                {[Github, Twitter, Linkedin].map((Icon, i) => (
                   <a
+                    key={i}
                     href="#"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-background text-muted-foreground hover:bg-card hover:text-foreground transition"
+                    className="flex h-10 w-10 items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:bg-card transition"
                   >
-                    <Github className="h-5 w-5" />
+                    <Icon className="h-4 w-4" />
                   </a>
-                  <a
-                    href="#"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-background text-muted-foreground hover:bg-card hover:text-foreground transition"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-background text-muted-foreground hover:bg-card hover:text-foreground transition"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                  </a>
-                </div>
+                ))}
               </div>
-            </motion.div>
+            </div>
+          </motion.div>
 
-            <motion.div
-              className="rounded-3xl border border-border bg-card p-10 shadow-sm"
-              variants={item}
-              whileHover={{ y: -4 }}
-            >
-              <h3 className="text-xl font-semibold text-foreground mb-4">Send a message</h3>
-              <form className="space-y-4">
-                <div>
-                  <label className="text-sm font-semibold text-foreground" htmlFor="name">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    className="mt-2 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    placeholder="Your name"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-foreground" htmlFor="email">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    className="mt-2 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    placeholder="you@example.com"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-foreground" htmlFor="message">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={4}
-                    className="mt-2 w-full resize-none rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    placeholder="How can we help?"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-background shadow-sm hover:bg-primary/90 transition"
-                >
-                  Send message
-                </button>
-              </form>
-            </motion.div>
-          </div>
-        </ScrollReveal>
+          {/* — Message form — */}
+          <motion.div variants={item} className="border border-border p-8 bg-card">
+            <h3 className="newspaper-headline text-xl mb-6">Send a message</h3>
+            <form className="space-y-4">
+              <div>
+                <label className="newspaper-byline text-[0.625rem]" htmlFor="name">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label className="newspaper-byline text-[0.625rem]" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  className="mt-1 w-full rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div>
+                <label className="newspaper-byline text-[0.625rem]" htmlFor="message">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  rows={4}
+                  className="mt-1 w-full resize-none rounded-none border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  placeholder="How can we help?"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-none bg-foreground px-6 py-3 text-sm font-semibold text-background hover:bg-foreground/90 transition"
+              >
+                Send message
+              </button>
+            </form>
+          </motion.div>
+        </div>
       </div>
     </motion.section>
   );

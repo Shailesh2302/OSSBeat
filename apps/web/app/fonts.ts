@@ -1,7 +1,6 @@
-import { Share_Tech } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 
-export const shareTech = Share_Tech({
-  weight: "400",
+export const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-share-tech",
-}); 
+  variable: "--font-serif",
+});

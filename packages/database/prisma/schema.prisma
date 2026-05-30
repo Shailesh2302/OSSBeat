@@ -22,7 +22,8 @@ model User {
   display_name     String?           
   last_login_at    DateTime?
   profile_url      String?
-  username         String 
+  username         String
+  show_profile     Boolean          @default(true)
 
   contributions    Contribution[]
   recommendedRepos RecommendedRepo[]

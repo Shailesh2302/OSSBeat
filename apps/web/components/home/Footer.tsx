@@ -6,66 +6,80 @@ import { Github, Twitter, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-background border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <Github className="h-8 w-8 text-primary" />
-              <span className="font-bold text-xl text-foreground">OSSBeat</span>
-            </Link>
-            <p className="text-muted-foreground text-sm">
-              Your gateway to open source contributions.
-            </p>
-          </div>
+    <footer className="bg-foreground text-background">
+      <div className="content-max section-padding">
+        <div className="text-center mb-8">
+          <h2 className="newspaper-headline text-3xl sm:text-4xl">
+            <Link href="/" className="text-background">OSSBeat</Link>
+          </h2>
+          <p className="text-sm text-background/70 mt-2">
+            Your gateway to open source contributions.
+          </p>
+        </div>
 
+        <hr className="border-background/30 mb-8" />
+
+        <div className="grid md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
+            <p className="text-xs uppercase tracking-widest font-semibold text-background/60 mb-3">
+              Sections
+            </p>
             <ul className="space-y-2">
-              <li>
-                <Link href="#features" className="text-muted-foreground text-sm hover:text-foreground">
-                  Features
-                </Link>
-              </li>
-              <li>
-                <Link href="#about" className="text-muted-foreground text-sm hover:text-foreground">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="#demo" className="text-muted-foreground text-sm hover:text-foreground">
-                  Demo
-                </Link>
-              </li>
-              <li>
-                <Link href="#contact" className="text-muted-foreground text-sm hover:text-foreground">
-                  Contact
-                </Link>
-              </li>
+              {[
+                { href: "#features", label: "Features" },
+                { href: "#about", label: "About" },
+                { href: "#demo", label: "Demo" },
+                { href: "#contact", label: "Contact" },
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-background/80 hover:text-background transition"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Connect</h4>
-            <div className="flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                <Github className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground">
-                <Linkedin className="h-5 w-5" />
-              </a>
+            <p className="text-xs uppercase tracking-widest font-semibold text-background/60 mb-3">
+              Connect
+            </p>
+            <div className="flex justify-center md:justify-start gap-4">
+              {[
+                { icon: Github, href: "#" },
+                { icon: Twitter, href: "#" },
+                { icon: Linkedin, href: "#" },
+              ].map(({ icon: Icon, href }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  className="flex h-9 w-9 items-center justify-center border border-background/30 text-background/80 hover:text-background hover:border-background/60 transition"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
+          </div>
+
+          <div>
+            <p className="text-xs uppercase tracking-widest font-semibold text-background/60 mb-3">
+              Colophon
+            </p>
+            <p className="text-sm text-background/70 leading-relaxed">
+              OSSBeat is an open source project. Built with Next.js, Tailwind
+              CSS, and framer-motion. Set in Geist and Playfair Display.
+            </p>
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center">
-          <p className="text-muted-foreground text-sm">
-            &copy; 2024 OSSBeat. All rights reserved.
-          </p>
-        </div>
+        <hr className="border-background/30 my-8" />
+
+        <p className="text-center text-xs text-background/50">
+          &copy; {new Date().getFullYear()} OSSBeat. All rights reserved.
+        </p>
       </div>
     </footer>
   );

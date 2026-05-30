@@ -118,28 +118,57 @@ export async function discoverRepos(params: {
   };
 }
 
+async function upsertFromWebhookRepo(repo: any) {
+  const topics: string[] = Array.isArray(repo.topics) ? repo.topics : [];
+
+  await prisma.repository.upsert({
+    where: { github_repo_id: String(repo.id) },
+    update: {
+      owner_login: repo.owner?.login ?? "",
+      owner_id: repo.owner?.id ?? 0,
+      owner_profile_url: repo.owner?.html_url ?? "",
+      name: repo.name ?? "",
+      full_name: repo.full_name ?? "",
+      html_url: repo.html_url ?? "",
+      description: repo.description ?? null,
+      primary_language: repo.language ?? null,
+      stars_count: repo.stargazers_count ?? 0,
+      forks_count: repo.forks_count ?? 0,
+      open_issues_count: repo.open_issues_count ?? 0,
+      topics,
+      is_fork: repo.fork ?? false,
+      is_private: repo.private ?? false,
+      last_pushed_at: repo.pushed_at ? new Date(repo.pushed_at) : null,
+    },
+    create: {
+      github_repo_id: String(repo.id),
+      owner_login: repo.owner?.login ?? "",
+      owner_id: repo.owner?.id ?? 0,
+      owner_profile_url: repo.owner?.html_url ?? "",
+      name: repo.name ?? "",
+      full_name: repo.full_name ?? "",
+      html_url: repo.html_url ?? "",
+      description: repo.description ?? null,
+      primary_language: repo.language ?? null,
+      stars_count: repo.stargazers_count ?? 0,
+      forks_count: repo.forks_count ?? 0,
+      open_issues_count: repo.open_issues_count ?? 0,
+      topics,
+      is_fork: repo.fork ?? false,
+      is_private: repo.private ?? false,
+      last_pushed_at: repo.pushed_at ? new Date(repo.pushed_at) : null,
+    },
+  });
+}
+
 export const repoService = {
   async upsertFromGithubWebhook(repo: any) {
-    const owner = await prisma.repository.findUnique({
-      where: { github_repo_id: repo.owner_id },
-    });
-
-    if (!owner) {
-      
-      return;
-    }
-
-    const mapped = mapGithubRepo(owner.id);
-
-    await prisma.repository.upsert({
-      where: { github_repo_id: mapped.github_repo_id },
-      update: mapped,
-      create: mapped,
-    });
+    if (!repo || !repo.id) return;
+    await upsertFromWebhookRepo(repo);
   },
   async updateLastPush(repoId: number, pushedAt: string) {
     await prisma.repository.updateMany({
-      where: { github_repo_id: repoId.toString() },
+      where: { github_repo_id: String(repoId) },
       data: { last_pushed_at: pushedAt ? new Date(pushedAt) : null },
     });
   },

@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { getDiscoverRepos } from "./repoController";
-import { protectRoute } from "../../middleware/authMiddleware";
 import { getCachedData, rateLimiting } from "../../middleware/redis";
 
 const router: Router = Router();

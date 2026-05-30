@@ -1,10 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import React from "react";
+import { motion } from "framer-motion";
 
 /* ---------------- CONFIG ---------------- */
 
@@ -181,54 +178,45 @@ function buildGrid(text: string) {
 /* ---------------- COMPONENT ---------------- */
 
 export default function OpenSourceJourneyChart() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const { grid, cols } = buildGrid(
     "START YOUR OPEN SOURCE JOURNEY"
   );
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const cells = containerRef.current.querySelectorAll<HTMLDivElement>(".chart-cell");
-    if (!cells.length) return;
-
-    gsap.fromTo(
-      cells,
-      { opacity: 0, scale: 0.5 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.4,
-        stagger: 0.005,
-        ease: "back.out(1.5)",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 90%",
-          once: true,
-        },
-      }
-    );
-  }, []);
-
   return (
-    <div ref={containerRef} className="w-full bg-neutral-950 rounded-xl p-1 overflow-hidden">
-      <div
-        className="grid justify-center"
+    <div className="w-full border border-border bg-card overflow-hidden">
+      <motion.div
+        className="grid justify-center p-2"
         style={{
           gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
           gap: GAP,
         }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.005 } },
+        }}
       >
         {grid.flat().map((cell, i) => (
-          <div
+          <motion.div
             key={i}
-            className={`chart-cell aspect-square rounded-sm ${
-              cell ? "bg-white" : "bg-neutral-900"
-            }`}
+            className="aspect-square"
             style={{ maxWidth: CELL_MAX, maxHeight: CELL_MAX }}
-          />
+            variants={{
+              hidden: { opacity: 0, scale: 0.5 },
+              visible: { opacity: 1, scale: 1 },
+            }}
+            transition={{ duration: 0.4, ease: "backOut" }}
+          >
+            <div
+              className={`w-full h-full ${
+                cell ? "bg-foreground" : "bg-muted"
+              }`}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
