@@ -17,7 +17,6 @@ enum ProviderName{
 model User {
   id               String            @id @default(uuid())
   email            String?           @unique
-  password_hash    String?
   avatar_url       String?           
   created_at       DateTime          @default(now())
   display_name     String?           
@@ -25,7 +24,6 @@ model User {
   profile_url      String?
   username         String
   show_profile     Boolean          @default(true)
-
   contributions    Contribution[]
   recommendedRepos RecommendedRepo[]
   refreshTokens    RefreshToken[]

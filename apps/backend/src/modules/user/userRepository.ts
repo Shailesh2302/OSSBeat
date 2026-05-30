@@ -32,33 +32,3 @@ export const updateUserData = async (
     },
   });
 };
-
-export const createUser = async (data: {
-  email: string;
-  username: string;
-  password_hash: string;
-  display_name?: string;
-}) => {
-  return prisma.user.create({
-    data: {
-      email: data.email,
-      username: data.username,
-      display_name: data.display_name ?? data.username,
-      password_hash: data.password_hash,
-    },
-  });
-};
-
-export const findUserByEmail = async (email: string) => {
-  return prisma.user.findUnique({
-    where: { email },
-    select: {
-      id: true,
-      email: true,
-      username: true,
-      display_name: true,
-      password_hash: true,
-      show_profile: true,
-    },
-  });
-};
