@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { axiosAuthInstance } from "@/utils/axios-auth";
 import type { UserProfile } from "@/types/userTypes";
-import { ExternalLink, Eye, EyeOff, GithubIcon } from "lucide-react";
+import { ExternalLink, Eye, EyeOff, GithubIcon, Star, GitFork } from "lucide-react";
+import ContributionGraph from "@/components/profile/ContributionGraph";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
@@ -188,17 +189,23 @@ export default function ProfilePage() {
                   <p className="text-sm text-muted-foreground">
                     @{profile.username}
                   </p>
-                  {profile.profile_url && (
-                    <a
-                      href={profile.profile_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground mt-1"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      GitHub Profile
-                    </a>
-                  )}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="inline-flex items-center gap-1 text-[0.625rem] font-semibold uppercase border border-border px-2 py-0.5">
+                      <GithubIcon className="h-3 w-3" />
+                      GitHub
+                    </span>
+                    {profile.profile_url && (
+                      <a
+                        href={profile.profile_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        Profile
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -235,6 +242,101 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
+
+            {/* Stats */}
+            <div className="border border-border bg-card p-8">
+              <h3 className="newspaper-headline text-lg mb-4">Activity</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="text-center p-3 border border-border">
+                  <p className="text-lg font-bold">{profile.repo_count ?? "—"}</p>
+                  <p className="newspaper-byline text-[0.625rem]">Repositories</p>
+                </div>
+                <div className="text-center p-3 border border-border">
+                  <p className="text-lg font-bold">{profile.contribution_count ?? "—"}</p>
+                  <p className="newspaper-byline text-[0.625rem]">Contributions</p>
+                </div>
+                <div className="text-center p-3 border border-border">
+                  <p className="text-lg font-bold">{profile.aggregated_stats?.total_commits ?? "—"}</p>
+                  <p className="newspaper-byline text-[0.625rem]">Commits</p>
+                </div>
+                <div className="text-center p-3 border border-border">
+                  <p className="text-lg font-bold">{profile.aggregated_stats?.total_prs ?? "—"}</p>
+                  <p className="newspaper-byline text-[0.625rem]">Pull Requests</p>
+                </div>
+                <div className="text-center p-3 border border-border">
+                  <p className="text-lg font-bold">{profile.aggregated_stats?.total_issues ?? "—"}</p>
+                  <p className="newspaper-byline text-[0.625rem]">Issues</p>
+                </div>
+                <div className="text-center p-3 border border-border">
+                  <p className="text-lg font-bold">{profile.user_repo_stats?.length ?? 0}</p>
+                  <p className="newspaper-byline text-[0.625rem]">Repos Tracked</p>
+                </div>
+              </div>
+            </div>
+
+            <ContributionGraph />
+
+            {/* Connected Providers */}
+            {profile.providers && profile.providers.length > 0 && (
+              <div className="border border-border bg-card p-8">
+                <h3 className="newspaper-headline text-lg mb-4">Connected Accounts</h3>
+                <div className="space-y-2">
+                  {profile.providers.map((p) => (
+                    <div key={p.provider} className="flex items-center gap-3 p-3 border border-border">
+                      <GithubIcon className="h-5 w-5" />
+                      <div>
+                        <p className="text-sm font-semibold">{p.provider}</p>
+                        <p className="text-[0.625rem] text-muted-foreground">
+                          Connected {new Date(p.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Repositories */}
+            {profile.repositories && profile.repositories.length > 0 && (
+              <div className="border border-border bg-card p-8">
+                <h3 className="newspaper-headline text-lg mb-4">Synced Repositories</h3>
+                <div className="space-y-3">
+                  {profile.repositories.map((repo) => (
+                    <a
+                      key={repo.id}
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block p-3 border border-border hover:bg-muted transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold truncate">{repo.name}</p>
+                          {repo.description && (
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                              {repo.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          {repo.primary_language && (
+                            <span className="text-[0.625rem] text-muted-foreground">{repo.primary_language}</span>
+                          )}
+                          <span className="flex items-center gap-1 text-[0.625rem] text-muted-foreground">
+                            <Star className="h-3 w-3" />
+                            {repo.stars_count}
+                          </span>
+                          <span className="flex items-center gap-1 text-[0.625rem] text-muted-foreground">
+                            <GitFork className="h-3 w-3" />
+                            {repo.forks_count}
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* — Privacy sidebar — */}

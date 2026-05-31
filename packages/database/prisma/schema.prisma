@@ -7,40 +7,32 @@ datasource db {
   provider = "postgresql"
 }
 
-
-enum ProviderName{
-  GOOGLE
-  GITHUB
-}
-
-
 model User {
   id               String            @id @default(uuid())
   email            String?           @unique
-  avatar_url       String?           
+  avatar_url       String?
   created_at       DateTime          @default(now())
-  display_name     String?           
+  display_name     String?
   last_login_at    DateTime?
   profile_url      String?
   username         String
-  show_profile     Boolean          @default(true)
+  show_profile     Boolean           @default(true)
   contributions    Contribution[]
+  providers        Provider[]
   recommendedRepos RecommendedRepo[]
   refreshTokens    RefreshToken[]
-  userRepoStats    UserRepoStat[]
-  providers        Provider[]
   repositories     Repository[]
+  userRepoStats    UserRepoStat[]
 }
 
 model Provider {
-  id             String   @id @default(uuid())
+  id             String       @id @default(uuid())
   provider       ProviderName
-  providerUserId String   
+  providerUserId String
   accessTokenEnc String?
-  createdAt      DateTime @default(now())
-
+  createdAt      DateTime     @default(now())
   userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerUserId])
   @@index([userId])
@@ -51,7 +43,6 @@ model RefreshToken {
   tokenHash String
   expiresAt DateTime
   createdAt DateTime @default(now())
-
   userId    String
   user      User     @relation(fields: [userId], references: [id])
 
@@ -59,35 +50,32 @@ model RefreshToken {
 }
 
 model Repository {
-  id                String   @id @default(uuid())
-  github_repo_id    String   @unique
+  id                String             @id @default(uuid())
+  github_repo_id    String             @unique
   owner_login       String
   owner_id          Int
   owner_profile_url String
   name              String
-  full_name         String   @unique
+  full_name         String             @unique
   html_url          String
   description       String?
   primary_language  String?
-  stars_count       Int      @default(0)
-  forks_count       Int      @default(0)
-  open_issues_count Int      @default(0)
-  topics            String[] @default([])
-  is_fork           Boolean  @default(false)
-  is_private        Boolean  @default(false)
+  stars_count       Int                @default(0)
+  forks_count       Int                @default(0)
+  open_issues_count Int                @default(0)
+  topics            String[]           @default([])
+  is_fork           Boolean            @default(false)
+  is_private        Boolean            @default(false)
   last_pushed_at    DateTime?
-
   userId            String?
-  user              User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   contributions     Contribution[]
   recommendedRepos  RecommendedRepo[]
   fetchHistory      RepoFetchHistory[]
+  user              User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userRepoStats     UserRepoStat[]
 
   @@index([userId])
 }
-
 
 model Contribution {
   id              String     @id @default(uuid())
@@ -100,12 +88,10 @@ model Contribution {
   details         Json?
   created_at      DateTime   @default(now())
   updated_at      DateTime   @updatedAt
-
   repo            Repository @relation(fields: [repo_id], references: [id])
   user            User       @relation(fields: [user_id], references: [id])
 
   @@unique([user_id, repo_id])
-
 }
 
 model UserRepoStat {
@@ -115,8 +101,7 @@ model UserRepoStat {
   total_commits   Int        @default(0)
   total_prs       Int        @default(0)
   total_issues    Int        @default(0)
-  last_updated_at DateTime   @default(now()) 
-
+  last_updated_at DateTime   @default(now())
   repo            Repository @relation(fields: [repo_id], references: [id])
   user            User       @relation(fields: [user_id], references: [id])
 
@@ -124,13 +109,12 @@ model UserRepoStat {
 }
 
 model RecommendedRepo {
-  id             String       @id @default(uuid())
+  id             String     @id @default(uuid())
   user_id        String
   repo_id        String
   score          Float?
   recommended_at DateTime   @default(now())
   tags_matched   Json?
-
   repo           Repository @relation(fields: [repo_id], references: [id])
   user           User       @relation(fields: [user_id], references: [id])
 }
@@ -155,8 +139,10 @@ model RepoFetchHistory {
   fetched_at   DateTime   @default(now())
   status       String
   raw_metadata Json?
-
   repo         Repository @relation(fields: [repo_id], references: [id])
 }
 
-
+enum ProviderName {
+  GOOGLE
+  GITHUB
+}
