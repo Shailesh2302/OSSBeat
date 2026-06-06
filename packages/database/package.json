@@ -16,6 +16,9 @@
     "dev": "tsx watch src/index.ts",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
     "prepare": "prisma generate"
   },
   "dependencies": {
