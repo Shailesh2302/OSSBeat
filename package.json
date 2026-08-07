@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:all": "bash -c 'pnpm exec turbo run db:deploy && (pnpm dev & cd apps/chatbot && ./.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000)'",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
