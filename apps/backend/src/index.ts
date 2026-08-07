@@ -12,6 +12,7 @@ import statsRoute from "./modules/stats/statsRoutes";
 import newsletterRoute from "./modules/newsletter/newsletterRoutes";
 import contactRoute from "./modules/contact/contactRoutes";
 import contributionsRoute from "./modules/contributions/contributionsRoutes";
+import chatbotRoutes from "./modules/chatbot/chatbotRoutes";
 
 // Environment validation
 const requiredEnvVars = [
@@ -75,6 +76,7 @@ app.use("/stats", statsRoute);
 app.use("/newsletter", newsletterRoute);
 app.use("/contact", contactRoute);
 app.use("/contributions", contributionsRoute);
+app.use("/chatbot", chatbotRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+qdrant-client
+python-dotenv
+pydantic
+numpy
+openai
+pyyaml

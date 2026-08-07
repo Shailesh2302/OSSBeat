@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ChatBot } from "@/components/chatbot/ChatBot";
 import { playfair } from "./fonts";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -39,6 +40,7 @@ export default function RootLayout({
           <main className="min-h-screen w-full bg-background">
             {children}
           </main>
+          <ChatBot />
         </ThemeProvider>
       </body>
     </html>
